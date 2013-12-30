@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QEngine", "QEngine\QEngine.vcxproj", "{8CD6AAFF-419D-492D-9CD7-A2EAE84CE407}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj", "{CA194FE8-0363-4A5D-B505-A5F81E269032}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8CD6AAFF-419D-492D-9CD7-A2EAE84CE407}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8CD6AAFF-419D-492D-9CD7-A2EAE84CE407}.Debug|Win32.Build.0 = Debug|Win32
+		{8CD6AAFF-419D-492D-9CD7-A2EAE84CE407}.Release|Win32.ActiveCfg = Release|Win32
+		{8CD6AAFF-419D-492D-9CD7-A2EAE84CE407}.Release|Win32.Build.0 = Release|Win32
+		{CA194FE8-0363-4A5D-B505-A5F81E269032}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CA194FE8-0363-4A5D-B505-A5F81E269032}.Debug|Win32.Build.0 = Debug|Win32
+		{CA194FE8-0363-4A5D-B505-A5F81E269032}.Release|Win32.ActiveCfg = Release|Win32
+		{CA194FE8-0363-4A5D-B505-A5F81E269032}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
