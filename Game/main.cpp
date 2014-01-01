@@ -40,7 +40,8 @@ void CreateSimpleMesh(Surface* surface){
 }
 
 bool Init(){
-	MD5Loader loader("../RES/MD5/boblampclean.md5mesh");
+	MD5Loader loader;
+	loader.Init("../RES/MD5/boblampclean.md5mesh");
 
 
 	scene = window->GetNewScene();

@@ -7,6 +7,7 @@ extern std::ofstream _log_file_;
 
 
 #define SAFEDELETE(pnt) if (pnt) {delete pnt; pnt = 0;}
+#define SAFEDELETEARRAY(pnt) if (pnt) {delete[] pnt; pnt = 0;}
 #define SAFERELEASE(pnt) if (pnt) {pnt->Release(); pnt = 0;}
 //#define LOG(x) OutputDebugStringA(x);
 
