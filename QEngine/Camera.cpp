@@ -8,7 +8,7 @@ Camera::Camera(void) :
 	dir(0.0f, 0.0f, 1.0f), 
 	up(0.0f, 1.0f, 0.0f), 
 	nearPlane(0.1f), 
-	farPlane(100.0f), 
+	farPlane(1000.0f), 
 	fovY(45.0f), 
 	aspect(1.0f){
 	LOG("Camera: constructor");

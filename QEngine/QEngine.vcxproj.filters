@@ -88,5 +88,8 @@
     <FxCompile Include="..\RES\Shader.fx">
       <Filter>Resource Files</Filter>
     </FxCompile>
+    <FxCompile Include="..\RES\Shader1.fx">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

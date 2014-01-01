@@ -3,10 +3,22 @@
 
 Window* window;
 
-Surface* surface;
+Surface* surfaceMD5_1;
+Surface* surfaceMD5_2;
+Surface* surfaceMD5_3;
+Surface* surfaceMD5_4;
+Surface* surfaceMD5_5;
+Surface* surfaceMD5_6;
+
 Scene* scene;
 Shader* shader;
-Texture* texture;
+Texture* texture_1;
+Texture* texture_2;
+Texture* texture_3;
+Texture* texture_4;
+Texture* texture_5;
+Texture* texture_6;
+
 Camera* camera;
 float angle = 0.0;
 
@@ -40,28 +52,46 @@ void CreateSimpleMesh(Surface* surface){
 }
 
 bool Init(){
-	MD5Loader loader;
-	loader.Init("../RES/MD5/boblampclean.md5mesh");
-
-
 	scene = window->GetNewScene();
 
-	//surface = scene->GetSurface();
-	//CreateSimpleMesh(surface);
-	surface = scene->GetSurfaceFromObj("../RES/tetr.obj");
-	if( ! surface ){
-		return false;
-	}
+	MD5Loader loader;
+	loader.Init("../RES/MD5/boblampclean.md5mesh");
+	surfaceMD5_1 = scene->GetSurface();
+	surfaceMD5_2 = scene->GetSurface();
+	surfaceMD5_3 = scene->GetSurface();
+	surfaceMD5_4 = scene->GetSurface();
+	surfaceMD5_5 = scene->GetSurface();
+	surfaceMD5_6 = scene->GetSurface();
 
-	shader = scene->GetShaderFromFile("../RES/Shader.fx", Shader::TEXCOORD0 | Shader::NORMAL);
+	loader.GetMesh(0, *surfaceMD5_1);
+	loader.GetMesh(1, *surfaceMD5_2);
+	loader.GetMesh(2, *surfaceMD5_3);
+	loader.GetMesh(3, *surfaceMD5_4);
+	loader.GetMesh(4, *surfaceMD5_5);
+	loader.GetMesh(5, *surfaceMD5_6);
+	//CreateSimpleMesh(surface);
+
+	//surface = scene->GetSurfaceFromObj("../RES/tetr.obj");
+	//if( ! surface ){
+	//	return false;
+	//}
+
+	//shader = scene->GetShaderFromFile("../RES/Shader.fx", Shader::TEXCOORD0 | Shader::NORMAL);
+	shader = scene->GetShaderFromFile("../RES/Shader1.fx", Shader::TEXCOORD0);
 	if ( ! shader ){
 		return false;
 	}
 
-	texture = scene->GetTexture("../RES/BrickRound.jpg");
-	if ( ! texture ){
-		return false;
-	}
+	texture_1 = scene->GetTexture("../RES/MD5/guard1_body.jpg");
+	texture_2 = scene->GetTexture("../RES/MD5/guard1_face.jpg");
+	texture_3 = scene->GetTexture("../RES/MD5/guard1_helmet.jpg");
+	texture_4 = scene->GetTexture("../RES/MD5/iron_grill.jpg");
+	texture_5 = scene->GetTexture("../RES/MD5/round_grill.jpg");
+
+	
+	//if ( ! texture ){
+	//	return false;
+	//}
 
 	camera = scene->GetCamera();
 	if ( ! camera ){
@@ -77,9 +107,10 @@ bool Init(){
 }
 
 bool Logic(){
-	camera->SetPosition(cos(angle) * 3, 0, sin(angle) *3);
+	camera->SetPosition(cos(angle) * 80, 30, sin(angle) * 80);
+
 	angle += 0.01f;
-	camera->LookAt(0, 0, 0);
+	camera->LookAt(0, 30, 0);
 
 	return true;
 }
@@ -87,7 +118,12 @@ bool Logic(){
 
 void Draw(){
 	if (shader){
-		shader->Draw(surface, camera, texture);
+		shader->Draw(surfaceMD5_1, camera, texture_1);
+		shader->Draw(surfaceMD5_2, camera, texture_2);
+		shader->Draw(surfaceMD5_3, camera, texture_3);
+		shader->Draw(surfaceMD5_4, camera, texture_4);
+		shader->Draw(surfaceMD5_5, camera, texture_5);
+		shader->Draw(surfaceMD5_6, camera, texture_1);
 	}
 }
 

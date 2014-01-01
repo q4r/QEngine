@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 
+#include "Surface.h"
+
 struct Pos {
 	float x, y, z;
 };
@@ -58,7 +60,7 @@ private:
 	unsigned int version;
 	unsigned int numJoints;
 	unsigned int numMeshes;
-	unsigned int constLoadedMesh;
+	unsigned int numLoadedMesh;
 
 	bool LoadJoints(std::ifstream& file, unsigned int count);
 	bool LoadMesh(std::ifstream& file);
@@ -70,5 +72,6 @@ public:
 	~MD5Loader(void);
 
 	bool Init(const std::string& fileName);
+	bool GetMesh(unsigned int index, Surface& surface);
 };
 

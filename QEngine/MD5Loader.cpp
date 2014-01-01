@@ -5,7 +5,8 @@
 #include <sstream>
 #include <limits> 
 
-#define MAX std::numeric_limits<std::streamsize>::max()
+//#define MAX = std::numeric_limits<std::streamsize>::max();
+#define MAX 1024
 
 #define GET_STRING_RET(str)if ( ! GetString(file, str) ){return false;}
 #define CHECK_RET(con, msg) if (!(con)) { LOG("MD5: " << msg); return false; };
@@ -32,13 +33,50 @@ bool GetString(std::ifstream& file, std::string& str){
 	return true;
 }
 
+void SetW(D3DXVECTOR4& q){
+	float t = 1.0f - (q.x * q.x) - (q.y * q.y) - (q.z * q.z);
+	if (t < 0.0f)
+	{
+		q.w = 0.0f;
+	}
+	else
+	{
+		q.w = -sqrt (t);
+	}
+}
+
+D3DXVECTOR4 QuatMult(D3DXVECTOR4 qa, D3DXVECTOR4 qb){
+	D3DXVECTOR4 r;
+	r.w = (qa.w * qb.w) - (qa.x * qb.x) - (qa.y * qb.y) - (qa.z * qb.z);
+	r.x = (qa.x * qb.w) + (qa.w * qb.x) + (qa.y * qb.z) - (qa.z * qb.y);
+	r.y = (qa.y * qb.w) + (qa.w * qb.y) + (qa.z * qb.x) - (qa.x * qb.z);
+	r.z = (qa.z * qb.w) + (qa.w * qb.z) + (qa.x * qb.y) - (qa.y * qb.x);
+	return r;
+}
+
+Pos Rotate(Pos quaternion, Pos point){
+	D3DXVECTOR4 quat(quaternion.x, quaternion.y, quaternion.z, 0.0f);
+	SetW(quat);
+	D3DXVECTOR4 pnt(point.x, point.y, point.z, 0.0f);
+	
+	pnt = QuatMult(quat, pnt);
+	quat.x *= -1;
+	quat.y *= -1;
+	quat.z *= -1;
+	pnt = QuatMult(pnt, quat);
+	point.x = pnt.x;
+	point.y = pnt.y;
+	point.z = pnt.z;
+	return point;
+}
+
 MD5Loader::MD5Loader() :
 	joints(NULL),
 	meshes(NULL),
 	version(0),
 	numJoints(0),
 	numMeshes(0),
-	constLoadedMesh(0){
+	numLoadedMesh(0){
 }
 
 MD5Loader::~MD5Loader(void){
@@ -136,7 +174,7 @@ bool MD5Loader::LoadJoints(std::ifstream& file, unsigned int count){
 bool MD5Loader::LoadMesh(std::ifstream& file){
 	CHECK_RET(meshes != NULL, "File corrupted");
 
-	LOG_("Mesh# " << constLoadedMesh + 1 << " ");
+	LOG_("Mesh# " << numLoadedMesh + 1 << " ");
 
 	char ch;
 	file >> ch;
@@ -148,7 +186,7 @@ bool MD5Loader::LoadMesh(std::ifstream& file){
 		file >> element;
 
 		if (element.compare("shader") == 0){
-			GET_STRING_RET(meshes[constLoadedMesh].shader);
+			GET_STRING_RET(meshes[numLoadedMesh].shader);
 			continue;
 		}
 
@@ -157,10 +195,10 @@ bool MD5Loader::LoadMesh(std::ifstream& file){
 			file >> cnt;
 			CHECK_RET(cnt != 0, "Count of vertives is 0");
 
-			meshes[constLoadedMesh].numverts = cnt;
-			meshes[constLoadedMesh].verts = new Vert[cnt];
+			meshes[numLoadedMesh].numverts = cnt;
+			meshes[numLoadedMesh].verts = new Vert[cnt];
 
-			LoadVerts(file, cnt, meshes[constLoadedMesh]);
+			LoadVerts(file, cnt, meshes[numLoadedMesh]);
 
 			continue;
 		}
@@ -170,10 +208,10 @@ bool MD5Loader::LoadMesh(std::ifstream& file){
 			file >> cnt;
 			CHECK_RET(cnt != 0, "Count of triangles is 0");
 
-			meshes[constLoadedMesh].numtris = cnt;
-			meshes[constLoadedMesh].tris = new Tri[cnt];
+			meshes[numLoadedMesh].numtris = cnt;
+			meshes[numLoadedMesh].tris = new Tri[cnt];
 
-			LoadTris(file, cnt, meshes[constLoadedMesh]);
+			LoadTris(file, cnt, meshes[numLoadedMesh]);
 
 			continue;
 		}
@@ -183,10 +221,10 @@ bool MD5Loader::LoadMesh(std::ifstream& file){
 			file >> cnt;
 			CHECK_RET(cnt != 0, "Count of weights is 0");
 
-			meshes[constLoadedMesh].numweights = cnt;
-			meshes[constLoadedMesh].weights = new Weight[cnt];
+			meshes[numLoadedMesh].numweights = cnt;
+			meshes[numLoadedMesh].weights = new Weight[cnt];
 
-			LoadWeights(file, cnt, meshes[constLoadedMesh]);
+			LoadWeights(file, cnt, meshes[numLoadedMesh]);
 
 			continue;
 		}
@@ -200,7 +238,7 @@ bool MD5Loader::LoadMesh(std::ifstream& file){
 	}
 	
 	LOG("OK");
-	constLoadedMesh++;
+	numLoadedMesh++;
 	
 	return true;
 }
@@ -214,7 +252,7 @@ bool MD5Loader::LoadVerts(std::ifstream& file, unsigned int count, Mesh& mesh){
 
 		file >> mesh.verts[i].index;
 		file >> ch >> mesh.verts[i].uv.u >> mesh.verts[i].uv.v >> ch;
-		file >> mesh.verts[i].startWeight >> mesh.verts[i].startWeight;
+		file >> mesh.verts[i].startWeight >> mesh.verts[i].countWeight;
 		file.ignore(MAX, '\n');
 	}
 
@@ -222,7 +260,6 @@ bool MD5Loader::LoadVerts(std::ifstream& file, unsigned int count, Mesh& mesh){
 }
 
 bool MD5Loader::LoadTris(std::ifstream& file, unsigned int count, Mesh& mesh){
-	char ch;
 	for (unsigned int i = 0; i < count; i++){
 		std::string elem;
 		file >> elem;
@@ -248,6 +285,54 @@ bool MD5Loader::LoadWeights(std::ifstream& file, unsigned int count, Mesh& mesh)
 
 		file.ignore(MAX, '\n');
 	}
+
+	return true;
+}
+
+bool MD5Loader::GetMesh(unsigned int index, Surface& surface){
+
+	Surface::Vertices vertices;
+	Surface::TexCoords texCoords;
+	//Surface::Normals normals;
+	Surface::Indices indices;
+
+	CHECK_RET(index < numLoadedMesh, "GetMesh: Invalid index value");
+	
+	Mesh& mesh = meshes[index];
+
+	unsigned int vertCnt = mesh.numverts;
+	for (unsigned int i = 0; i < vertCnt; i++){
+		unsigned int start = mesh.verts[i].startWeight;
+		unsigned int weightCnt = mesh.verts[i].countWeight;
+
+		D3DXVECTOR2 texCoord(0.0f, 0.0f);
+		texCoord.x = mesh.verts[i].uv.u;
+		texCoord.y = mesh.verts[i].uv.v;
+		texCoords.push_back(texCoord);
+
+		D3DXVECTOR3 vertexPos(0.0f, 0.0f, 0.0f);
+		for (unsigned int j = 0; j < weightCnt; j++){
+			Weight& weight = mesh.weights[start + j];
+			Joint& joint = joints[weight.joint];
+
+			Pos p = Rotate(joint.orient, weight.pos);
+
+			vertexPos.x += (joint.pos.x + p.x) * weight.bias;
+			vertexPos.z += (joint.pos.y + p.y) * weight.bias;
+			vertexPos.y += (joint.pos.z + p.z) * weight.bias;						
+		}
+		vertices.push_back(vertexPos);
+	}
+
+	unsigned int indCnt = meshes[index].numtris;
+	for (unsigned int i = 0; i < indCnt; i++){
+		Tri& tri = mesh.tris[i];
+		indices.push_back(tri.i0);
+		indices.push_back(tri.i1);
+		indices.push_back(tri.i2);
+	}
+
+	surface.Init(vertices, texCoords, indices);
 
 	return true;
 }
