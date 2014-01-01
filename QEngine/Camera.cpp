@@ -11,12 +11,12 @@ Camera::Camera(void) :
 	farPlane(100.0f), 
 	fovY(45.0f), 
 	aspect(1.0f){
-	LOG("Camera: constructor\n");
+	LOG("Camera: constructor");
 }
 
 
 Camera::~Camera(void){
-	LOG("Camera: destructor\n");
+	LOG("Camera: destructor");
 }
 
 void Camera::UpDown(float dt){

@@ -31,7 +31,7 @@ Window::Window() :
 	drawing(NULL), 
 	releasing(NULL),
 	scenes(){
-	LOG("Window: constructor\n");
+	LOG("Window: constructor");
 }
 
 Window::~Window(void){
@@ -39,7 +39,7 @@ Window::~Window(void){
 		delete *i;
 	}
 	SAFEDELETE(d3d);
-	LOG("Window: destructor\n");
+	LOG("Window: destructor");
 }
 
 bool Window::Init( HINSTANCE hInstance, int nCmdShow, unsigned int width, unsigned int height ){
@@ -72,7 +72,7 @@ bool Window::Init( HINSTANCE hInstance, int nCmdShow, unsigned int width, unsign
 
 	d3d = new D3D();
 	if ( ! d3d->Init(hWnd, width, height) ){
-		 LOG("Error: init D3D\n");
+		 LOG("Error: init D3D");
 		return false;
 	}
 
@@ -85,10 +85,11 @@ bool Window::Init( HINSTANCE hInstance, int nCmdShow, unsigned int width, unsign
 
 Window* Window::GetWindow( HINSTANCE hInstance, int nCmdShow, unsigned int width, unsigned int height ){
 	if ( ! pWindow ){
+		START_LOGING;
 		pWindow = new Window();
 
 		if ( ! pWindow->Init(hInstance, nCmdShow, width, height) ){
-			LOG("Error: window init\n");
+			LOG("Error: window init");
 			pWindow->Release();
 		}
 	}
@@ -101,13 +102,13 @@ void Window::Run(){
 
 	if (initialization){
 		if ( !initialization() ){
-			LOG("Error: Initialization.\n");
+			LOG("Error: Initialization.");
 			Release();
 			return;
 		}
 	}
 	
-	LOG("Window: >>>\n");
+	LOG("Window: >>>");
 	do{
 		if ( PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) ){
 			TranslateMessage(&msg);
@@ -122,15 +123,16 @@ void Window::Run(){
 		}
 
 	}while (msg.message != WM_QUIT);
-	LOG("Window: <<<\n");
+	LOG("Window: <<<");
 
 	if (releasing && (!releasing())){
-		LOG("Error: Releasing.\n");
+		LOG("Error: Releasing.");
 	}
 }
 
 void Window::Release(){
 	SAFEDELETE(pWindow);
+	STOP_LOGING;
 }
 
 void Window::SetInitFunc(Initialization* _initialization){

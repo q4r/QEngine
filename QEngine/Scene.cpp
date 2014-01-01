@@ -7,7 +7,7 @@ Scene::Scene(D3D& _d3d):
 	shaders(),
 	textures(),
 	camera(){
-	LOG("Scene: constructor\n");
+	LOG("Scene: constructor");
 }
 
 
@@ -24,7 +24,7 @@ Scene::~Scene(void){
 		SAFEDELETE(*i);
 	}
 
-	LOG("Scene: destructor\n");
+	LOG("Scene: destructor");
 }
 
 //===============================================================================================

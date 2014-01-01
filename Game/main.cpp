@@ -1,5 +1,6 @@
 #include "Window.h"
 
+
 Window* window;
 
 Surface* surface;
@@ -39,11 +40,14 @@ void CreateSimpleMesh(Surface* surface){
 }
 
 bool Init(){
+	MD5Loader loader("../RES/MD5/boblampclean.md5mesh");
+
+
 	scene = window->GetNewScene();
 
 	//surface = scene->GetSurface();
 	//CreateSimpleMesh(surface);
-	surface = scene->GetSurfaceFromObj("../RES/b.obj");
+	surface = scene->GetSurfaceFromObj("../RES/tetr.obj");
 	if( ! surface ){
 		return false;
 	}
@@ -72,7 +76,7 @@ bool Init(){
 }
 
 bool Logic(){
-	camera->SetPosition(cos(angle) * 3, 1, sin(angle) *3);
+	camera->SetPosition(cos(angle) * 3, 0, sin(angle) *3);
 	angle += 0.01f;
 	camera->LookAt(0, 0, 0);
 

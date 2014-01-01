@@ -82,6 +82,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="D3D.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="MD5Loader.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Surface.h" />
@@ -92,6 +93,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="MD5Loader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Surface.cpp" />

@@ -1,5 +1,5 @@
 #include "Globals.h"
-
+std::ofstream _log_file_;
 void Split(std::string data, char c, Strings& strings){
 	std::size_t found = data.find(c);
 	while ( found != std::string::npos ) {

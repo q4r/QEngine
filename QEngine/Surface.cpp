@@ -14,13 +14,13 @@ Surface::Surface(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext) :
 	vertexCount(0), 
 	indexCount(0), 
 	stride(0){
-	LOG("Surface: constructor\n");
+	LOG("Surface: constructor");
 }
 
 Surface::~Surface(void){	
 	SAFERELEASE(pVertexBuffer);
 	SAFERELEASE(pIndexBuffer);
-	LOG("Surface: destructor\n");
+	LOG("Surface: destructor");
 }
 
 
@@ -66,7 +66,7 @@ bool Surface::SetIndices(Indices& _indices){
 
 bool Surface::Init(Vertices& _vertices, Colors& _colors, Indices& _indices){
 	bool result = true;
-	LOG("Surface: Init: ");
+	LOG_("Surface: Init... ");
 	vertexCount = _vertices.size();
 	VertexTypeColor* vertices = new VertexTypeColor[vertexCount];
 	
@@ -93,14 +93,14 @@ bool Surface::Init(Vertices& _vertices, Colors& _colors, Indices& _indices){
 		result = SetIndices(_indices);
 	}
 
-	LOG("OK!\n");
+	LOG("OK!");
 
 	return result;
 }
 
 bool Surface::Init(Vertices& _vertices, TexCoords& _texCoords, Indices& _indices){
 	bool result = true;
-	LOG("Surface: Init: ");
+	LOG_("Surface: Init... ");
 
 	vertexCount = _vertices.size();
 	VertexTypeTexture* vertices = new VertexTypeTexture[vertexCount];
@@ -128,17 +128,17 @@ bool Surface::Init(Vertices& _vertices, TexCoords& _texCoords, Indices& _indices
 		result = SetIndices(_indices);
 	}
 
-	LOG("OK!\n");
+	LOG("OK!");
 
 	return result;
 }
 
 bool Surface::Init(Vertices& _vertices, Normals& _normals, TexCoords& _texCoords, Indices& _indices){
 	bool result = true;
-	LOG("Surface: Init: ");
+	LOG_("Surface: Init... ");
 	vertexCount = _vertices.size();
 	if ( (vertexCount != _normals.size()) || (vertexCount != _texCoords.size()) ){
-		LOG("Error\n");
+		LOG("Error");
 		return false;
 	}
 	
@@ -168,7 +168,7 @@ bool Surface::Init(Vertices& _vertices, Normals& _normals, TexCoords& _texCoords
 		result = SetIndices(_indices);
 	}
 
-	LOG("OK!\n");
+	LOG("OK!");
 
 	return result;
 }
@@ -215,7 +215,7 @@ Surface* Surface::LoadFromObj(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 
 		std::list<Indices3> indices3;
 
-		LOG("Surface: Loading .OBJ...");
+		LOG_("Surface: Loading .OBJ...");
 		std::string line;
 		while ( ! file.eof() ){
 			std::stringstream sline;
@@ -294,9 +294,9 @@ Surface* Surface::LoadFromObj(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 				indices3.push_back(i31);
 			}
 		}
-		LOG("Complete\n");
+		LOG("Complete");
 
-		LOG("Surface: Create lists... ");
+		LOG_("Surface: Create lists... ");
 		unsigned int index = 0;
 		for (std::list<Indices3>::iterator i = indices3.begin(); i != indices3.end(); i++){
 			vertices.push_back(verticesTemp[i->vertex - 1]);
@@ -308,7 +308,7 @@ Surface* Surface::LoadFromObj(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 			}
 			indices.push_back(index++);
 		}
-		LOG("Complete\n");
+		LOG("Complete");
 
 		surface = new Surface(pDevice, pContext);
 		if ( ! surface->Init(vertices, texc, indices) ) {

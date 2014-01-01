@@ -6,19 +6,19 @@ Texture::Texture(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext) :
 	pContext(_pContext),
 	texture(NULL), 
 	sampleState(NULL){	
-	LOG("Texture: constructor\n");
+	LOG("Texture: constructor");
 }
 
 Texture::~Texture(void){
 	SAFERELEASE(sampleState);
 	SAFERELEASE(texture);
-	LOG("Texture: destructor\n");
+	LOG("Texture: destructor");
 }
 
 bool Texture::Init(const std::string& fileName){
-	LOG("Texture: Init:");
+	LOG_("Texture: Init... ");
 	if (FAILED( D3DX11CreateShaderResourceViewFromFileA(pDevice, fileName.c_str(), NULL, NULL, &texture, NULL) )){
-		LOG("Error\n");
+		LOG("Error");
 		texture = NULL;
 		return false;
 	}
@@ -40,13 +40,13 @@ bool Texture::Init(const std::string& fileName){
 
 
 	if( FAILED(pDevice->CreateSamplerState(&samplerDesc, &sampleState)) ){
-		LOG("Error\n");
+		LOG("Error");
 		sampleState = NULL;
 		SAFERELEASE(texture);
 		return false;
 	}
 
-	LOG("OK\n");
+	LOG("OK");
 	return true;
 }
 

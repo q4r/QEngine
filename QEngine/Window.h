@@ -4,6 +4,8 @@
 #include "Scene.h"
 #include <list>
 
+#include "MD5Loader.h"
+
 class Window
 {
 public:

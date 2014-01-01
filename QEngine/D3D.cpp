@@ -11,7 +11,7 @@ D3D::D3D(void) :
 	pDepthStencilBuffer(NULL),
 	pDepthStencilState(NULL),
 	pDepthStencilView(NULL){
-	LOG("D3D: constructor\n");
+	LOG("D3D: constructor");
 }
 
 
@@ -24,7 +24,7 @@ D3D::~D3D(void){
 	SAFERELEASE(pDevice);
 	SAFERELEASE(pSwapChain);	
 
-	LOG("D3D: destructor\n");
+	LOG("D3D: destructor");
 }
 
 
@@ -52,19 +52,19 @@ bool D3D::Init(HWND hwnd, int screenWidth, int screenHeight){
 
 	if ( FAILED( D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1, D3D11_SDK_VERSION, 
 		&swapChainDescr, &pSwapChain, &pDevice, NULL, &pContext) ) ){
-			LOG("D3D: Init: Error in D3D11CreateDeviceAndSwapChain\n");
+			LOG("D3D: Init: Error in D3D11CreateDeviceAndSwapChain");
 			return false;
 	}
 
 	//back buffer
 	ID3D11Texture2D* pBackBuffer;
 	if ( FAILED( pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBuffer) ) ){
-		LOG("D3D: Init: Error in GetBuffer\n");
+		LOG("D3D: Init: Error in GetBuffer");
 		return false;
 	}
 
 	if ( FAILED( pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView) ) ){
-		LOG("D3D: Init: Error in CreateRenderTargetView\n");
+		LOG("D3D: Init: Error in CreateRenderTargetView");
 		pBackBuffer->Release();
 		return false;
 	}
@@ -88,7 +88,7 @@ bool D3D::Init(HWND hwnd, int screenWidth, int screenHeight){
 	depthBufferDescr.MiscFlags = 0;
 
 	if ( FAILED( pDevice->CreateTexture2D(&depthBufferDescr, NULL, &pDepthStencilBuffer) ) ){
-		LOG("D3D: Init: Error in CreateTexture2D\n");
+		LOG("D3D: Init: Error in CreateTexture2D");
 		return false;
 	}
 
@@ -126,7 +126,7 @@ bool D3D::Init(HWND hwnd, int screenWidth, int screenHeight){
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	if ( FAILED( pDevice->CreateDepthStencilView(pDepthStencilBuffer, &depthStencilViewDesc, &pDepthStencilView) ) ){
-		LOG("Error: CreateDepthStencilView\n");
+		LOG("Error: CreateDepthStencilView");
 		return false;
 	}
 

@@ -11,7 +11,7 @@ Shader::Shader(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext) :
 	pLayout(0), 
 	matrixBuffer(0), 
 	lightBuffer(0){
-	LOG("Shader: constructor\n");
+	LOG("Shader: constructor");
 }
 
 
@@ -21,7 +21,7 @@ Shader::~Shader(void){
 
 	SAFERELEASE(matrixBuffer);
 	SAFERELEASE(lightBuffer);
-	LOG("Shader: destructor\n");
+	LOG("Shader: destructor");
 }
 
 ID3D11VertexShader* Shader::InitVertexShader(const std::string& fileName, const std::string& funcName){
@@ -34,7 +34,7 @@ ID3D11VertexShader* Shader::InitVertexShader(const std::string& fileName, const 
 			LOG((LPCSTR)errBuffer->GetBufferPointer());
 			SAFERELEASE(errBuffer);
 		}else{
-			LOG("Shader: Vertex shader file not found\n");
+			LOG("Shader: Vertex shader file not found");
 		}
 		pVShader = NULL;
 	}else{
@@ -130,29 +130,29 @@ ID3D11Buffer* Shader::CreateShaderConstantsBuffer(unsigned int size){
 
 bool Shader::Init(const std::string& fileName, unsigned int additionalAttributes, const std::string& vertexFunctionName, const std::string& pixelFunctionName){
 
-	LOG("Shaders: Init: ");
+	LOG_("Shaders: Init... ");
 
 	pVertexShader = InitVertexShader(fileName, vertexFunctionName);
 	pPixelShader  = InitPixelShader (fileName, pixelFunctionName);
 
 	if (! ConstructInputLayout(additionalAttributes) ){
-		LOG("Error!\n");
+		LOG("Error!");
 		return false;
 	}	
 
 	matrixBuffer = CreateShaderConstantsBuffer(sizeof(MatrixBufferType));
 	if (!matrixBuffer){
-		LOG("Error!\n");
+		LOG("Error!");
 		return false;
 	}
 
 	lightBuffer = CreateShaderConstantsBuffer(sizeof(LightBufferType));
 	if (!lightBuffer){
-		LOG("Error!\n");
+		LOG("Error!");
 		return false;
 	}
 
-	LOG("OK!\n");
+	LOG("OK!");
 	return true;
 }
 
@@ -187,8 +187,8 @@ bool Shader::SetShaderParameters(const D3DXMATRIX& _view, const D3DXMATRIX& _pro
 	pLightData->diffuseColor = D3DXVECTOR4(1.0f, 0.8f, 0.8f, 1.0f);
 	static float a = 0;
 	a += 0.1f;
-	//pLightData->lightDirection = D3DXVECTOR4(0.0f, sin(a), cos(a), 0.0f);
-	pLightData->lightDirection = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 0.0f);
+	pLightData->lightDirection = D3DXVECTOR4(0.0f, sin(a), cos(a), 0.0f);
+	//pLightData->lightDirection = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 0.0f);
 
 	pContext->Unmap(lightBuffer, 0);
 	return true;
