@@ -53,7 +53,7 @@ bool Window::Init( HINSTANCE hInstance, int nCmdShow, unsigned int width, unsign
     wc.cbWndExtra = 0;
     wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon( NULL, ( LPCTSTR )IDI_APPLICATION );
-    wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+    wc.hCursor = LoadCursor( NULL, IDC_CROSS );
 	wc.hbrBackground = ( HBRUSH )GetStockObject( BLACK_BRUSH );
     wc.lpszMenuName = NULL;
     wc.lpszClassName = CLASSNAME;

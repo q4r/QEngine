@@ -60,10 +60,9 @@ private:
 	unsigned int version;
 	unsigned int numJoints;
 	unsigned int numMeshes;
-	unsigned int numLoadedMesh;
 
 	bool LoadJoints(std::ifstream& file, unsigned int count);
-	bool LoadMesh(std::ifstream& file);
+	bool LoadMesh(std::ifstream& file, unsigned int meshIndex);
 	bool LoadVerts(std::ifstream& file, unsigned int count, Mesh& mesh);
 	bool LoadTris(std::ifstream& file, unsigned int count, Mesh& mesh);
 	bool LoadWeights(std::ifstream& file, unsigned int count, Mesh& mesh);
@@ -72,6 +71,6 @@ public:
 	~MD5Loader(void);
 
 	bool Init(const std::string& fileName);
-	bool GetMesh(unsigned int index, Surface& surface);
+	bool GetMesh(unsigned int index, Surface& surface, const std::string& pathToMaterials);
 };
 

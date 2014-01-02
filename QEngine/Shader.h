@@ -64,6 +64,6 @@ private:
 		unsigned int additionalAttributes,
 		const std::string& vertexFunctionName = "VMain", const std::string& pixelFunctionName = "PMain");	
 public:
-	void Draw(Surface* surface, Camera* camera, Texture* texture);
+	void Draw(Surface* surface, Camera* camera);
 };
 

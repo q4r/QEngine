@@ -6,6 +6,8 @@
 #include <list>
 #include <vector>
 
+#include "Texture.h"
+
 class Surface
 {
 	friend class Scene;
@@ -19,6 +21,7 @@ public:
 private:
 	ID3D11Device* pDevice;
 	ID3D11DeviceContext* pContext;
+	Scene& scene;
 
 	struct VertexTypeColor{
 		D3DXVECTOR4 position;
@@ -43,21 +46,26 @@ private:
 	unsigned int indexCount;
 	unsigned int stride;
 
+	Texture* texture;
+
 	ID3D11Buffer* CreateBuffer(void* data, unsigned int sizeofDataElement, unsigned int elementCount);
 	bool SetIndices(Indices& indices);
 
-	Surface(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	~Surface(void);
-
-	static Surface* LoadFromObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const std::string& fileName);
-	
+	Surface(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, Scene& scene);
+	~Surface(void);	
 public:
+	bool LoadFromObj(const std::string& fileName);
+
 	bool Init(Vertices& vertices, Colors& colors, Indices& indices);
-	bool Init(Vertices& vertices, TexCoords& texCoords, Indices& indices);
-	bool Init(Vertices& vertices, Normals& normals, TexCoords& texCoords, Indices& indices);
+	bool Init(Vertices& vertices, TexCoords& texCoords, Indices& indices, Texture* texture);
+	bool Init(Vertices& vertices, Normals& normals, TexCoords& texCoords, Indices& indices, Texture* texture);
 	
 	unsigned int GetIndexCount();	
+	void SetTexture(Texture* texture);
+	Texture* GetTexture();
 
 	void SetAsCurrent();
+
+	Scene& GetScene();
 };
 

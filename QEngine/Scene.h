@@ -29,7 +29,6 @@ private:
 
 public:
 	Surface* GetSurface();
-	Surface* GetSurfaceFromObj(const std::string& fileName);
 
 	Shader* GetShaderFromFile(const std::string& fileName, unsigned int additionalAttributes);
 

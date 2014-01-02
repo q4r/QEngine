@@ -30,18 +30,8 @@ Scene::~Scene(void){
 //===============================================================================================
 
 Surface* Scene::GetSurface(){
-	Surface* surface = new Surface(d3d.GetDevice(), d3d.GetContext());
+	Surface* surface = new Surface(d3d.GetDevice(), d3d.GetContext(), *this);
 	surfaces.push_back(surface);
-	return surface;
-}
-
-Surface* Scene::GetSurfaceFromObj(const std::string& fileName){
-	Surface* surface = Surface::LoadFromObj(d3d.GetDevice(), d3d.GetContext(), fileName);
-	if ( ! surface ){
-		SAFEDELETE(surface);
-	}else{
-		surfaces.push_back(surface);
-	}
 	return surface;
 }
 

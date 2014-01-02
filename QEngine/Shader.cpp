@@ -194,16 +194,12 @@ bool Shader::SetShaderParameters(const D3DXMATRIX& _view, const D3DXMATRIX& _pro
 	return true;
 }
 
-void Shader::Draw(Surface* surface, Camera* camera, Texture* texture){	
+void Shader::Draw(Surface* surface, Camera* camera){	
 	if ( ! surface ){
 		return;
 	}
 
 	surface->SetAsCurrent();
-
-	if (texture){
-		texture->SetAsCurrent();
-	}
 
 	SetShaderParameters(camera->GetViewMatrix(), camera->GetProjectionMatrix());
 	unsigned int bufferNumber = 0;

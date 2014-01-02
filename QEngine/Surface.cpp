@@ -6,14 +6,17 @@
 #include <string>
 #include <list>
 
-Surface::Surface(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext) : 
+Surface::Surface(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, Scene& _scene) : 
 	pDevice(_pDevice), 
 	pContext(_pContext), 
 	pVertexBuffer(NULL), 
 	pIndexBuffer(NULL), 
 	vertexCount(0), 
 	indexCount(0), 
-	stride(0){
+	stride(0),
+	texture(NULL),
+	scene(_scene)
+	{
 	LOG("Surface: constructor");
 }
 
@@ -98,7 +101,7 @@ bool Surface::Init(Vertices& _vertices, Colors& _colors, Indices& _indices){
 	return result;
 }
 
-bool Surface::Init(Vertices& _vertices, TexCoords& _texCoords, Indices& _indices){
+bool Surface::Init(Vertices& _vertices, TexCoords& _texCoords, Indices& _indices, Texture* _texture){
 	bool result = true;
 	LOG_("Surface: Init... ");
 
@@ -128,12 +131,14 @@ bool Surface::Init(Vertices& _vertices, TexCoords& _texCoords, Indices& _indices
 		result = SetIndices(_indices);
 	}
 
+	texture = _texture;
+
 	LOG("OK!");
 
 	return result;
 }
 
-bool Surface::Init(Vertices& _vertices, Normals& _normals, TexCoords& _texCoords, Indices& _indices){
+bool Surface::Init(Vertices& _vertices, Normals& _normals, TexCoords& _texCoords, Indices& _indices, Texture* _texture){
 	bool result = true;
 	LOG_("Surface: Init... ");
 	vertexCount = _vertices.size();
@@ -168,6 +173,8 @@ bool Surface::Init(Vertices& _vertices, Normals& _normals, TexCoords& _texCoords
 		result = SetIndices(_indices);
 	}
 
+	texture = _texture;
+
 	LOG("OK!");
 
 	return result;
@@ -178,6 +185,10 @@ void Surface::SetAsCurrent(){
 
 	if ( (pVertexBuffer) && (pIndexBuffer) )
 	{
+		if (texture){
+			texture->SetAsCurrent();
+		}
+
 		unsigned int offset = 0;
 
 		pContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &stride, &offset);
@@ -190,14 +201,12 @@ unsigned int Surface::GetIndexCount(){
 	return indexCount;
 }
 
-Surface* Surface::LoadFromObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const std::string& fileName){
+bool Surface::LoadFromObj(const std::string& fileName){
 	std::ifstream file;
 
 	file.open(fileName.c_str());
 
 	if (file.is_open()){
-		Surface* surface;
-
 		Surface::Vertices vertices;		
 		Surface::Normals  normals;
 		Surface::TexCoords texc;
@@ -310,15 +319,24 @@ Surface* Surface::LoadFromObj(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 		}
 		LOG("Complete");
 
-		surface = new Surface(pDevice, pContext);
-		if ( ! surface->Init(vertices, texc, indices) ) {
-			delete surface;
-			return NULL;
+		if ( ! Init(vertices, texc, indices, NULL) ) {
+			return false;
 		}
 
-
 		file.close();
-		return surface;
+		return true;
 	}
-	return NULL;
+	return false;
+}
+
+void Surface::SetTexture(Texture* _texture){
+	texture = _texture;
+}
+
+Texture* Surface::GetTexture(){
+	return texture;
+}
+
+Scene& Surface::GetScene(){
+	return scene;
 }
