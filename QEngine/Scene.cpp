@@ -3,7 +3,7 @@
 
 Scene::Scene(D3D& _d3d):
 	d3d(_d3d),
-	surfaces(), 
+	meshes(), 
 	shaders(),
 	textures(),
 	camera(){
@@ -20,8 +20,8 @@ Scene::~Scene(void){
 		SAFEDELETE(*i);
 	}
 
-	for (Surfaces::iterator i = surfaces.begin(); i != surfaces.end(); i++){
-		SAFEDELETE(*i);
+	for (Meshes::iterator i = meshes.begin(); i != meshes.end(); i++){
+		//SAFEDELETE(*i);
 	}
 
 	LOG("Scene: destructor");
@@ -29,10 +29,10 @@ Scene::~Scene(void){
 
 //===============================================================================================
 
-Surface* Scene::GetSurface(){
-	Surface* surface = new Surface(d3d.GetDevice(), d3d.GetContext(), *this);
-	surfaces.push_back(surface);
-	return surface;
+Mesh* Scene::GetMesh(){
+	Mesh* mesh = new Mesh(d3d.GetDevice(), d3d.GetContext(), *this);
+	meshes.push_back(mesh);
+	return mesh;
 }
 
 Shader* Scene::GetShaderFromFile(const std::string& fileName, unsigned int additionalAttributes){

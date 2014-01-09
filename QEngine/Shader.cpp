@@ -71,7 +71,7 @@ ID3D11PixelShader* Shader::InitPixelShader(const std::string& fileName, const st
 }
 
 bool Shader::ConstructInputLayout(unsigned int attributes){
-	D3D11_INPUT_ELEMENT_DESC layout[4]; 
+	D3D11_INPUT_ELEMENT_DESC layout[5]; 
 	
 	D3D11_INPUT_ELEMENT_DESC position	= {"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0};
 	D3D11_INPUT_ELEMENT_DESC normal		= {"NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0};

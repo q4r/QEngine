@@ -39,7 +39,7 @@ struct Weight{
 	Pos pos;
 };
 
-struct Mesh{
+struct _Mesh{
 	std::string shader;
 
 	unsigned int numverts;
@@ -55,7 +55,7 @@ struct Mesh{
 class MD5Loader{
 private:
 	Joint* joints;
-	Mesh* meshes;
+	_Mesh* meshes;
 
 	unsigned int version;
 	unsigned int numJoints;
@@ -63,14 +63,15 @@ private:
 
 	bool LoadJoints(std::ifstream& file, unsigned int count);
 	bool LoadMesh(std::ifstream& file, unsigned int meshIndex);
-	bool LoadVerts(std::ifstream& file, unsigned int count, Mesh& mesh);
-	bool LoadTris(std::ifstream& file, unsigned int count, Mesh& mesh);
-	bool LoadWeights(std::ifstream& file, unsigned int count, Mesh& mesh);
+	bool LoadVerts(std::ifstream& file, unsigned int count, _Mesh& mesh);
+	bool LoadTris(std::ifstream& file, unsigned int count, _Mesh& mesh);
+	bool LoadWeights(std::ifstream& file, unsigned int count, _Mesh& mesh);
 public:
 	MD5Loader();
 	~MD5Loader(void);
 
 	bool Init(const std::string& fileName);
-	bool GetMesh(unsigned int index, Surface& surface, const std::string& pathToMaterials);
+	bool GetSurface(unsigned int index, Surface& surface, std::string& shader);
+	unsigned int GetSurfaceCount();
 };
 

@@ -3,13 +3,7 @@
 
 Window* window;
 
-Surface* surface;
-Surface* surfaceMD5_1;
-Surface* surfaceMD5_2;
-Surface* surfaceMD5_3;
-Surface* surfaceMD5_4;
-Surface* surfaceMD5_5;
-Surface* surfaceMD5_6;
+Mesh* mesh;
 
 Scene* scene;
 Shader* shader;
@@ -50,21 +44,8 @@ void CreateSimpleMesh(Surface* surface){
 bool Init(){
 	scene = window->GetNewScene();
 
-	MD5Loader loader;
-	loader.Init("../RES/MD5/boblampcleanJPG.md5mesh");
-	surfaceMD5_1 = scene->GetSurface();
-	surfaceMD5_2 = scene->GetSurface();
-	surfaceMD5_3 = scene->GetSurface();
-	surfaceMD5_4 = scene->GetSurface();
-	surfaceMD5_5 = scene->GetSurface();
-	surfaceMD5_6 = scene->GetSurface();
-
-	loader.GetMesh(0, *surfaceMD5_1, "../RES/MD5/");
-	loader.GetMesh(1, *surfaceMD5_2, "../RES/MD5/");
-	loader.GetMesh(2, *surfaceMD5_3, "../RES/MD5/");
-	loader.GetMesh(3, *surfaceMD5_4, "../RES/MD5/");
-	loader.GetMesh(4, *surfaceMD5_5, "../RES/MD5/");
-	loader.GetMesh(5, *surfaceMD5_6, "../RES/MD5/");
+	mesh = scene->GetMesh();
+	mesh->LoadFromMD5("../RES/MD5/boblampcleanJPG.md5mesh", "../RES/MD5/");
 	
 	//shader = scene->GetShaderFromFile("../RES/Shader.fx", Shader::TEXCOORD0 | Shader::NORMAL);
 	shader = scene->GetShaderFromFile("../RES/Shader1.fx", Shader::TEXCOORD0);
@@ -88,7 +69,7 @@ bool Init(){
 bool Logic(){
 	camera->SetPosition(cos(angle) * 80, 30, sin(angle) * 80);
 
-	angle += 0.01f;
+	angle += 0.001f;
 	camera->LookAt(0, 30, 0);
 
 	return true;
@@ -97,12 +78,7 @@ bool Logic(){
 
 void Draw(){
 	if (shader){
-		shader->Draw(surfaceMD5_1, camera);
-		shader->Draw(surfaceMD5_2, camera);
-		shader->Draw(surfaceMD5_3, camera);
-		shader->Draw(surfaceMD5_4, camera);
-		shader->Draw(surfaceMD5_5, camera);
-		shader->Draw(surfaceMD5_6, camera);
+		mesh->Draw(*shader, *camera);
 	}
 }
 

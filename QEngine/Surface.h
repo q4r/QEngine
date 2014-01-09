@@ -10,7 +10,7 @@
 
 class Surface
 {
-	friend class Scene;
+	friend class Mesh;
 public:
 	typedef std::vector<D3DXVECTOR3> Vertices;
 	typedef std::vector<D3DXVECTOR3> Normals;
@@ -21,7 +21,6 @@ public:
 private:
 	ID3D11Device* pDevice;
 	ID3D11DeviceContext* pContext;
-	Scene& scene;
 
 	struct VertexTypeColor{
 		D3DXVECTOR4 position;
@@ -51,7 +50,7 @@ private:
 	ID3D11Buffer* CreateBuffer(void* data, unsigned int sizeofDataElement, unsigned int elementCount);
 	bool SetIndices(Indices& indices);
 
-	Surface(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, Scene& scene);
+	Surface(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	~Surface(void);	
 public:
 	bool LoadFromObj(const std::string& fileName);
@@ -65,7 +64,5 @@ public:
 	Texture* GetTexture();
 
 	void SetAsCurrent();
-
-	Scene& GetScene();
 };
 

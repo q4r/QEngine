@@ -6,7 +6,7 @@
 #include <string>
 #include <list>
 
-Surface::Surface(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, Scene& _scene) : 
+Surface::Surface(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext) : 
 	pDevice(_pDevice), 
 	pContext(_pContext), 
 	pVertexBuffer(NULL), 
@@ -14,9 +14,8 @@ Surface::Surface(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, Scene& 
 	vertexCount(0), 
 	indexCount(0), 
 	stride(0),
-	texture(NULL),
-	scene(_scene)
-	{
+	texture(NULL)
+{
 	LOG("Surface: constructor");
 }
 
@@ -60,7 +59,7 @@ bool Surface::SetIndices(Indices& _indices){
 		i++;
 	}
 
-	pIndexBuffer = CreateBuffer(indices, sizeof(unsigned long), indexCount);
+	pIndexBuffer = CreateBuffer(indices, sizeof(unsigned long), indexCount);//¡¿√!!!!!!!!!! D3D11_BIND_VERTEX_BUFFER Ï‡∫ ·ÛÚË INDEX
 
 	delete[] indices;
 
@@ -335,8 +334,4 @@ void Surface::SetTexture(Texture* _texture){
 
 Texture* Surface::GetTexture(){
 	return texture;
-}
-
-Scene& Surface::GetScene(){
-	return scene;
 }

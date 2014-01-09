@@ -4,7 +4,7 @@
 
 #include "D3D.h"
 
-#include "Surface.h"
+#include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
 
@@ -12,12 +12,12 @@ class Scene
 {
 	friend class Window;
 private:
-	typedef std::list<Surface*> Surfaces;
+	typedef std::list<Mesh*> Meshes;
 	typedef std::list<Shader*> Shaders;
 	typedef std::list<Texture*> Textures;
 
 	D3D& d3d;
-	Surfaces surfaces;
+	Meshes meshes;
 	Shaders shaders;
 	Textures textures;
 
@@ -28,7 +28,7 @@ private:
 	~Scene(void);
 
 public:
-	Surface* GetSurface();
+	Mesh* GetMesh();
 
 	Shader* GetShaderFromFile(const std::string& fileName, unsigned int additionalAttributes);
 

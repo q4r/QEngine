@@ -126,7 +126,7 @@ bool MD5Loader::Init(const std::string& fileName){
 
 		if (element.compare("numMeshes") == 0){
 			file >> numMeshes;
-			meshes = new Mesh[numMeshes];
+			meshes = new _Mesh[numMeshes];
 			for (unsigned int i = 0; i < numMeshes; i++){
 				meshes[i].verts = NULL;
 				meshes[i].tris = NULL;
@@ -244,7 +244,7 @@ bool MD5Loader::LoadMesh(std::ifstream& file, unsigned int meshIndex){
 	return true;
 }
 
-bool MD5Loader::LoadVerts(std::ifstream& file, unsigned int count, Mesh& mesh){
+bool MD5Loader::LoadVerts(std::ifstream& file, unsigned int count, _Mesh& mesh){
 	char ch;
 	for (unsigned int i = 0; i < count; i++){
 		std::string elem;
@@ -260,7 +260,7 @@ bool MD5Loader::LoadVerts(std::ifstream& file, unsigned int count, Mesh& mesh){
 	return true;
 }
 
-bool MD5Loader::LoadTris(std::ifstream& file, unsigned int count, Mesh& mesh){
+bool MD5Loader::LoadTris(std::ifstream& file, unsigned int count, _Mesh& mesh){
 	for (unsigned int i = 0; i < count; i++){
 		std::string elem;
 		file >> elem;
@@ -274,7 +274,7 @@ bool MD5Loader::LoadTris(std::ifstream& file, unsigned int count, Mesh& mesh){
 	return true;
 }
 
-bool MD5Loader::LoadWeights(std::ifstream& file, unsigned int count, Mesh& mesh){
+bool MD5Loader::LoadWeights(std::ifstream& file, unsigned int count, _Mesh& mesh){
 	char ch;
 	for (unsigned int i = 0; i < count; i++){
 		std::string elem;
@@ -290,7 +290,7 @@ bool MD5Loader::LoadWeights(std::ifstream& file, unsigned int count, Mesh& mesh)
 	return true;
 }
 
-bool MD5Loader::GetMesh(unsigned int index, Surface& surface, const std::string& pathToMaterials){
+bool MD5Loader::GetSurface(unsigned int index, Surface& surface, std::string& shader){
 
 	Surface::Vertices vertices;
 	Surface::TexCoords texCoords;
@@ -299,7 +299,7 @@ bool MD5Loader::GetMesh(unsigned int index, Surface& surface, const std::string&
 
 	CHECK_RET(index < numMeshes, "GetMesh: Invalid index value");
 	
-	Mesh& mesh = meshes[index];
+	_Mesh& mesh = meshes[index];
 
 	unsigned int vertCnt = mesh.numverts;
 	for (unsigned int i = 0; i < vertCnt; i++){
@@ -333,16 +333,14 @@ bool MD5Loader::GetMesh(unsigned int index, Surface& surface, const std::string&
 		indices.push_back(tri.i2);
 	}
 
-	std::string textureFileName = "";
-	if ( pathToMaterials.size() == 0 ){
-		textureFileName = mesh.shader;
-	}else{
-		unsigned found = mesh.shader.find_last_of("/\\");
-		//std::string path = mesh.shader.substr(0, found);
-		textureFileName = pathToMaterials + mesh.shader.substr(found + 1);
+	if ( ! surface.Init(vertices, texCoords, indices, NULL) ){
+		return false;
 	}
-	Texture* texture = surface.GetScene().GetTexture(textureFileName);
-	surface.Init(vertices, texCoords, indices, texture);
+	shader = mesh.shader;
 
 	return true;
+}
+
+unsigned int MD5Loader::GetSurfaceCount(){
+	return numMeshes;
 }

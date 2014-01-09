@@ -92,31 +92,31 @@ bool D3D::Init(HWND hwnd, int screenWidth, int screenHeight){
 		return false;
 	}
 
-	////depth stensil
-	//D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-	//ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-	//depthStencilDesc.DepthEnable = true;
-	//depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	//depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	//depth stensil state
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
-	//depthStencilDesc.StencilEnable = true;
-	//depthStencilDesc.StencilReadMask = 0xFF;
-	//depthStencilDesc.StencilWriteMask = 0xFF;
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
 
-	//depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	//depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	//depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	//depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	//depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	//depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-	//depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	//depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	//if ( FAILED( pDevice->CreateDepthStencilState(&depthStencilDesc, &pDepthStencilState) ) ){
-	//	LOG("Error: CreateDepthStencilState\n");
-	//	return false;
-	//}
+	if ( FAILED( pDevice->CreateDepthStencilState(&depthStencilDesc, &pDepthStencilState) ) ){
+		LOG("Error: CreateDepthStencilState\n");
+		return false;
+	}
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
@@ -168,4 +168,8 @@ ID3D11Device* D3D::GetDevice(){
 
 ID3D11DeviceContext* D3D::GetContext(){
 	return pContext;
+}
+
+void D3D::EnableDepthTest(bool state){
+	//??????
 }
