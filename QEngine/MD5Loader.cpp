@@ -294,7 +294,7 @@ bool MD5Loader::GetSurface(unsigned int index, Surface& surface, std::string& sh
 
 	Surface::Vertices vertices;
 	Surface::TexCoords texCoords;
-	//Surface::Normals normals;
+	Surface::Normals normals;
 	Surface::Indices indices;
 
 	CHECK_RET(index < numMeshes, "GetMesh: Invalid index value");
@@ -302,6 +302,11 @@ bool MD5Loader::GetSurface(unsigned int index, Surface& surface, std::string& sh
 	_Mesh& mesh = meshes[index];
 
 	unsigned int vertCnt = mesh.numverts;
+
+	vertices.reserve(vertCnt);
+	texCoords.reserve(vertCnt);
+	normals.reserve(vertCnt);
+
 	for (unsigned int i = 0; i < vertCnt; i++){
 		unsigned int start = mesh.verts[i].startWeight;
 		unsigned int weightCnt = mesh.verts[i].countWeight;
@@ -323,6 +328,9 @@ bool MD5Loader::GetSurface(unsigned int index, Surface& surface, std::string& sh
 			vertexPos.y += (joint.pos.z + p.z) * weight.bias;
 		}
 		vertices.push_back(vertexPos);
+
+		D3DXVECTOR3 vertexNorm(0.0f, 0.0f, 0.0f);
+		normals.push_back(vertexNorm);
 	}
 
 	unsigned int indCnt = meshes[index].numtris;
@@ -331,9 +339,26 @@ bool MD5Loader::GetSurface(unsigned int index, Surface& surface, std::string& sh
 		indices.push_back(tri.i0);
 		indices.push_back(tri.i1);
 		indices.push_back(tri.i2);
+
+		D3DXVECTOR3 v1 = vertices[tri.i0] - vertices[tri.i1];
+		D3DXVECTOR3 v2 = vertices[tri.i2] - vertices[tri.i1];	
+		D3DXVec3Normalize(&v1, &v1);
+		D3DXVec3Normalize(&v2, &v2);
+
+		D3DXVECTOR3 norm;
+		D3DXVec3Cross(&norm, &v2, &v1);
+		D3DXVec3Normalize(&norm, &norm);
+
+		normals[tri.i0] += norm;
+		normals[tri.i1] += norm;
+		normals[tri.i2] += norm;
 	}
 
-	if ( ! surface.Init(vertices, texCoords, indices, NULL) ){
+	for (unsigned int i = 0; i < vertCnt; i++){
+		D3DXVec3Normalize(&normals[i], &normals[i]);
+	}
+
+	if ( ! surface.Init(vertices, normals, texCoords, indices, NULL) ){
 		return false;
 	}
 	shader = mesh.shader;

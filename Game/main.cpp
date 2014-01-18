@@ -47,8 +47,8 @@ bool Init(){
 	mesh = scene->GetMesh();
 	mesh->LoadFromMD5("../RES/MD5/boblampcleanJPG.md5mesh", "../RES/MD5/");
 	
-	//shader = scene->GetShaderFromFile("../RES/Shader.fx", Shader::TEXCOORD0 | Shader::NORMAL);
-	shader = scene->GetShaderFromFile("../RES/Shader1.fx", Shader::TEXCOORD0);
+	shader = scene->GetShaderFromFile("../RES/Shader.fx", Shader::TEXCOORD0 | Shader::NORMAL);
+	//shader = scene->GetShaderFromFile("../RES/Shader1.fx", Shader::TEXCOORD0);
 	if ( ! shader ){
 		return false;
 	}
@@ -58,8 +58,8 @@ bool Init(){
 		return false;
 	}
 
-	camera->SetPosition(1, 1, -2);
-	camera->LookAt(0, 0, 0);
+	camera->SetPosition(0, 30, 80);
+	camera->LookAt(0, 30, 0);
 	camera->SetAspect(8.0f/6.0f);
 	//camera->LeftRight(0.5);
 
