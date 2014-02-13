@@ -4,17 +4,7 @@
 #include <fstream>
 
 #include "Surface.h"
-
-struct Pos {
-	float x, y, z;
-};
-
-struct Joint {
-	std::string name;
-	int parent;
-	Pos pos;
-	Pos orient;
-};
+#include "Node.h"
 
 struct UV{
 	float u, v;
@@ -36,7 +26,7 @@ struct Weight{
 	unsigned int index;
 	unsigned int joint;
 	float bias;
-	Pos pos;
+	D3DXVECTOR3 pos;
 };
 
 struct _Mesh{
@@ -54,7 +44,7 @@ struct _Mesh{
 
 class MD5Loader{
 private:
-	Joint* joints;
+	Node* joints;
 	_Mesh* meshes;
 
 	unsigned int version;

@@ -21,7 +21,7 @@ Scene::~Scene(void){
 	}
 
 	for (Meshes::iterator i = meshes.begin(); i != meshes.end(); i++){
-		//SAFEDELETE(*i);
+		SAFEDELETE(*i);
 	}
 
 	LOG("Scene: destructor");

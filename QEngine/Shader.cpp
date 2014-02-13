@@ -186,8 +186,8 @@ bool Shader::SetShaderParameters(const D3DXMATRIX& _view, const D3DXMATRIX& _pro
 	pLightData = (LightBufferType*)mappedResources.pData;
 	pLightData->diffuseColor = D3DXVECTOR4(1.0f, 0.8f, 0.8f, 1.0f);
 	static float a = 0;
-	a += 0.1f;
-	pLightData->lightDirection = D3DXVECTOR4(0.0f, sin(a), cos(a), 0.0f);
+	a += 0.0001f;
+	pLightData->lightDirection = D3DXVECTOR4(sin(a), 0.0f, cos(a), 0.0f);
 	//pLightData->lightDirection = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 0.0f);
 
 	pContext->Unmap(lightBuffer, 0);

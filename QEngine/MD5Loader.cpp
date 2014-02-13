@@ -2,6 +2,8 @@
 
 #include "Globals.h"
 #include "Scene.h"
+
+
 #include <iostream>
 #include <sstream>
 #include <limits> 
@@ -32,43 +34,6 @@ bool GetString(std::ifstream& file, std::string& str){
 	}
 
 	return true;
-}
-
-void SetW(D3DXVECTOR4& q){
-	float t = 1.0f - (q.x * q.x) - (q.y * q.y) - (q.z * q.z);
-	if (t < 0.0f)
-	{
-		q.w = 0.0f;
-	}
-	else
-	{
-		q.w = -sqrt (t);
-	}
-}
-
-D3DXVECTOR4 QuatMult(D3DXVECTOR4 qa, D3DXVECTOR4 qb){
-	D3DXVECTOR4 r;
-	r.w = (qa.w * qb.w) - (qa.x * qb.x) - (qa.y * qb.y) - (qa.z * qb.z);
-	r.x = (qa.x * qb.w) + (qa.w * qb.x) + (qa.y * qb.z) - (qa.z * qb.y);
-	r.y = (qa.y * qb.w) + (qa.w * qb.y) + (qa.z * qb.x) - (qa.x * qb.z);
-	r.z = (qa.z * qb.w) + (qa.w * qb.z) + (qa.x * qb.y) - (qa.y * qb.x);
-	return r;
-}
-
-Pos Rotate(Pos quaternion, Pos point){
-	D3DXVECTOR4 quat(quaternion.x, quaternion.y, quaternion.z, 0.0f);
-	SetW(quat);
-	D3DXVECTOR4 pnt(point.x, point.y, point.z, 0.0f);
-	
-	pnt = QuatMult(quat, pnt);
-	quat.x *= -1;
-	quat.y *= -1;
-	quat.z *= -1;
-	pnt = QuatMult(pnt, quat);
-	point.x = pnt.x;
-	point.y = pnt.y;
-	point.z = pnt.z;
-	return point;
 }
 
 MD5Loader::MD5Loader() :
@@ -120,7 +85,7 @@ bool MD5Loader::Init(const std::string& fileName){
 
 		if (element.compare("numJoints") == 0){
 			file >> numJoints;
-			joints = new Joint[numJoints];
+			joints = new Node[numJoints];
 			continue;
 		}
 
@@ -160,10 +125,20 @@ bool MD5Loader::LoadJoints(std::ifstream& file, unsigned int count){
 
 	CHECK_RET(ch == '{', "{ is not found");
 	
+	std::string name;
+	unsigned int parent;
+	float x, y, z;
+	Quaternion orientation;
+
 	for (unsigned int i = 0; i < count; i++){
-		file >> joints[i].name >> joints[i].parent;
-		file >> ch >> joints[i].pos.x >> joints[i].pos.y >> joints[i].pos.z >> ch;
-		file >> ch >> joints[i].orient.x >> joints[i].orient.y >> joints[i].orient.z >> ch;
+		file >> name >> parent;
+		file >> ch >> x >> y >> z >> ch;
+		joints[i].SetPosition(x, y, z);
+
+		file >> ch >> x >> y >> z >> ch;
+		orientation.SetAsIdentity(x, y, z);
+		joints[i].SetOrientation(orientation);
+
 		file.ignore(MAX, '\n');
 	}
 
@@ -319,14 +294,16 @@ bool MD5Loader::GetSurface(unsigned int index, Surface& surface, std::string& sh
 		D3DXVECTOR3 vertexPos(0.0f, 0.0f, 0.0f);
 		for (unsigned int j = 0; j < weightCnt; j++){
 			Weight& weight = mesh.weights[start + j];
-			Joint& joint = joints[weight.joint];
+			Node& joint = joints[weight.joint];
 
-			Pos p = Rotate(joint.orient, weight.pos);
-
-			vertexPos.x += (joint.pos.x + p.x) * weight.bias;
-			vertexPos.z += (joint.pos.y + p.y) * weight.bias;
-			vertexPos.y += (joint.pos.z + p.z) * weight.bias;
+			D3DXVECTOR3 p = joint.GetLocalOrientation().Rotate(weight.pos);
+			vertexPos += (joint.GetLocalPosition() + p) * weight.bias;
 		}
+
+		float yz = vertexPos.y;
+		vertexPos.y = vertexPos.z;
+		vertexPos.z = yz;
+
 		vertices.push_back(vertexPos);
 
 		D3DXVECTOR3 vertexNorm(0.0f, 0.0f, 0.0f);

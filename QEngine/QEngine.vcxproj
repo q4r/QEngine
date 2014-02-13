@@ -84,6 +84,8 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="MD5Loader.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Surface.h" />
@@ -96,6 +98,8 @@
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="MD5Loader.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Surface.cpp" />
