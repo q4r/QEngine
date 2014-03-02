@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Surface.h"
-#include "Scene.h"
 #include "Shader.h"
-#include "Camera.h"
+#include "Texture.h"
 #include <list>
 
 class Mesh{
@@ -11,18 +10,24 @@ class Mesh{
 private:
 	ID3D11Device* pDevice;
 	ID3D11DeviceContext* pContext;
-	Scene& scene;
 
-	typedef std::list<Surface*> Surfaces;
+	struct DrawElement{
+		Surface* pSurface;
+		Shader* pShader;
+		Texture* pTexture;
+	};
+
+	typedef std::list<DrawElement> Surfaces;
 	Surfaces surfaces;
 
-	Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, Scene& scene);
+	Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	~Mesh();
 
 public:
-	//bool AddSurface(Surface* surface);
-	bool LoadFromMD5(const std::string& fileName, const std::string& pathToMaterials);
+	bool AddSurface(Surface::Vertices& vertices, Surface::Colors& colors, Surface::Indices& indices, Shader* pShader, Texture* pTexture);
+	bool AddSurface(Surface::Vertices& vertices, Surface::TexCoords& texCoords, Surface::Indices& indices, Shader* pShader, Texture* pTexture);
+	bool AddSurface(Surface::Vertices& vertices, Surface::Normals& normals, Surface::TexCoords& texCoords, Surface::Indices& indices, Shader* pShader, Texture* pTexture);
 
-	void Draw(Shader& shader, Camera& camera);
+	void Draw(const D3DXMATRIX& world, const D3DXMATRIX& view, const D3DXMATRIX& projection);
 };
 

@@ -156,7 +156,7 @@ bool Shader::Init(const std::string& fileName, unsigned int additionalAttributes
 	return true;
 }
 
-bool Shader::SetShaderParameters(const D3DXMATRIX& _view, const D3DXMATRIX& _projection){
+bool Shader::SetShaderParameters(const D3DXMATRIX& _world, const D3DXMATRIX& _view, const D3DXMATRIX& _projection){
 	D3D11_MAPPED_SUBRESOURCE mappedResources;
 	MatrixBufferType* pMatrixData;
 	LightBufferType* pLightData;
@@ -167,10 +167,9 @@ bool Shader::SetShaderParameters(const D3DXMATRIX& _view, const D3DXMATRIX& _pro
 
 	pMatrixData = (MatrixBufferType*)mappedResources.pData;
 
-	pMatrixData->projection = _projection; 	
-	pMatrixData->view = _view;	
-	//pData->world = ?;
-	D3DXMatrixIdentity(&pMatrixData->world);
+	pMatrixData->projection = _projection; 
+	pMatrixData->view = _view;
+	pMatrixData->world = _world;
 	
 	D3DXMatrixTranspose(&pMatrixData->projection, &pMatrixData->projection);
 	D3DXMatrixTranspose(&pMatrixData->view, &pMatrixData->view);
@@ -194,14 +193,7 @@ bool Shader::SetShaderParameters(const D3DXMATRIX& _view, const D3DXMATRIX& _pro
 	return true;
 }
 
-void Shader::Draw(Surface* surface, Camera* camera){	
-	if ( ! surface ){
-		return;
-	}
-
-	surface->SetAsCurrent();
-
-	SetShaderParameters(camera->GetViewMatrix(), camera->GetProjectionMatrix());
+void Shader::SetAsCurrent(){	
 	unsigned int bufferNumber = 0;
 	pContext->VSSetConstantBuffers(bufferNumber, 1, &matrixBuffer);
 	pContext->PSSetConstantBuffers(bufferNumber, 1, &lightBuffer);
@@ -209,7 +201,4 @@ void Shader::Draw(Surface* surface, Camera* camera){
 	pContext->IASetInputLayout(pLayout);
 	pContext->VSSetShader(pVertexShader, NULL, 0);
 	pContext->PSSetShader(pPixelShader, NULL, 0);
-	
-
-	pContext->DrawIndexed(surface->GetIndexCount(), 0, 0);
 }

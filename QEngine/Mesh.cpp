@@ -1,51 +1,91 @@
+#include "Globals.h"
 #include "Mesh.h"
 
-#include "MD5Loader.h";
+#include "MD5Loader.h"
 
-Mesh::Mesh(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext, Scene& _scene) :
+Mesh::Mesh(ID3D11Device* _pDevice, ID3D11DeviceContext* _pContext) :
 	pDevice(_pDevice), 
-	pContext(_pContext), 
-	scene(_scene),
+	pContext(_pContext),
 	surfaces()
 {
 }
 
 Mesh::~Mesh(){
+	for (Surfaces::iterator surface = surfaces.begin(); surface != surfaces.end(); surface++){
+		surface->pShader = NULL;
+		surface->pTexture = NULL;
+		SAFEDELETE(surface->pSurface);
+	}
+	surfaces.clear();
 }
 
-bool Mesh::LoadFromMD5(const std::string& fileName, const std::string& pathToMaterials){
-	MD5Loader loader;
-	if (! loader.Init(fileName)){
+bool Mesh::AddSurface(Surface::Vertices& vertices, Surface::Colors& colors, Surface::Indices& indices, Shader* pShader, Texture* pTexture){
+	Surface* pSurface = new Surface(pDevice, pContext);
+
+	if (! pSurface->Init(vertices, colors, indices)){
+		delete pSurface;
 		return false;
 	}
 
-	unsigned int surfaceCount = loader.GetSurfaceCount();
+	DrawElement element;
+	element.pSurface = pSurface;
+	element.pShader = pShader;
+	element.pTexture = pTexture;
 
-	for (unsigned int surfaceIndex = 0; surfaceIndex < surfaceCount; surfaceIndex++){
-		Surface* surface = new Surface(pDevice, pContext);
-		std::string shader; //TEXTURE
-		loader.GetSurface(surfaceIndex, *surface, shader);
-
-		std::string textureFileName = "";
-		if ( pathToMaterials.size() == 0 ){
-			textureFileName = shader;
-		}else{
-			unsigned found = shader.find_last_of("/\\");
-			//std::string path = mesh.shader.substr(0, found);
-			textureFileName = pathToMaterials + shader.substr(found + 1);
-		}
-		Texture* texture = scene.GetTexture(textureFileName);
-
-		surface->SetTexture(texture);
-
-		surfaces.push_back(surface);
-	}
+	surfaces.push_back(element);
 
 	return true;
 }
 
-void Mesh::Draw(Shader& shader, Camera& camera){
+bool Mesh::AddSurface(Surface::Vertices& vertices, Surface::TexCoords& texCoords, Surface::Indices& indices, Shader* pShader, Texture* pTexture){
+	Surface* pSurface = new Surface(pDevice, pContext);
+
+	if (! pSurface->Init(vertices, texCoords, indices)){
+		delete pSurface;
+		return false;
+	}
+
+	DrawElement element;
+	element.pSurface = pSurface;
+	element.pShader = pShader;
+	element.pTexture = pTexture;
+
+	surfaces.push_back(element);
+
+	return true;
+}
+
+bool Mesh::AddSurface(Surface::Vertices& vertices, Surface::Normals& normals, Surface::TexCoords& texCoords, Surface::Indices& indices, Shader* pShader, Texture* pTexture){
+	Surface* pSurface = new Surface(pDevice, pContext);
+
+	if (! pSurface->Init(vertices, normals, texCoords, indices)){
+		delete pSurface;
+		return false;
+	}
+
+	DrawElement element;
+	element.pSurface = pSurface;
+	element.pShader = pShader;
+	element.pTexture = pTexture;
+
+	surfaces.push_back(element);
+
+	return true;
+}
+
+void Mesh::Draw(const D3DXMATRIX& world, const D3DXMATRIX& view, const D3DXMATRIX& projection){
 	for (Surfaces::iterator surface = surfaces.begin(); surface != surfaces.end(); surface++){
-		shader.Draw(*surface, &camera);
+		if (!surface->pShader){
+			LOG("Error: Need shader!!!");
+			continue;
+		}
+		surface->pShader->SetShaderParameters(world, view, projection);
+		surface->pShader->SetAsCurrent();
+
+		if (surface->pTexture){
+			surface->pTexture->SetAsCurrent();
+		}
+
+		surface->pSurface->Draw();
 	}	
 }

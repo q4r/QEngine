@@ -11,7 +11,6 @@
 #include <dxgi.h>
 #include <D3Dcommon.h>
 #include <D3D11.h>
-#include <D3DX10math.h>
 
 class D3D
 {

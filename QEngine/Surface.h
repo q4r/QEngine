@@ -6,8 +6,6 @@
 #include <list>
 #include <vector>
 
-#include "Texture.h"
-
 class Surface
 {
 	friend class Mesh;
@@ -45,24 +43,16 @@ private:
 	unsigned int indexCount;
 	unsigned int stride;
 
-	Texture* texture;
-
 	ID3D11Buffer* CreateBuffer(void* data, unsigned int sizeofDataElement, unsigned int elementCount);
 	bool SetIndices(Indices& indices);
 
 	Surface(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	~Surface(void);	
 public:
-	bool LoadFromObj(const std::string& fileName);
-
 	bool Init(Vertices& vertices, Colors& colors, Indices& indices);
-	bool Init(Vertices& vertices, TexCoords& texCoords, Indices& indices, Texture* texture);
-	bool Init(Vertices& vertices, Normals& normals, TexCoords& texCoords, Indices& indices, Texture* texture);
-	
-	unsigned int GetIndexCount();	
-	void SetTexture(Texture* texture);
-	Texture* GetTexture();
+	bool Init(Vertices& vertices, TexCoords& texCoords, Indices& indices);
+	bool Init(Vertices& vertices, Normals& normals, TexCoords& texCoords, Indices& indices);
 
-	void SetAsCurrent();
+	void Draw();
 };
 

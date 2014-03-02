@@ -58,7 +58,7 @@ private:
 	bool LoadWeights(std::ifstream& file, unsigned int count, _Mesh& mesh);
 public:
 	MD5Loader();
-	~MD5Loader(void);
+	~MD5Loader();
 
 	bool Init(const std::string& fileName);
 	bool GetSurface(unsigned int index, Surface& surface, std::string& shader);

@@ -335,7 +335,7 @@ bool MD5Loader::GetSurface(unsigned int index, Surface& surface, std::string& sh
 		D3DXVec3Normalize(&normals[i], &normals[i]);
 	}
 
-	if ( ! surface.Init(vertices, normals, texCoords, indices, NULL) ){
+	if ( ! surface.Init(vertices, normals, texCoords, indices) ){
 		return false;
 	}
 	shader = mesh.shader;

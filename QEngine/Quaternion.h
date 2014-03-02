@@ -1,6 +1,10 @@
 #pragma once
 
+#include <D3D11.h>
 #include <D3DX10math.h>
+
+struct D3DXVECTOR3;
+struct D3DXMATRIX;
 
 class Quaternion{
 	float x, y, z, w;
@@ -30,5 +34,6 @@ public:
 	void Identity();
 
 	D3DXVECTOR3 Rotate(const D3DXVECTOR3& vector);
+	D3DXMATRIX GetMatrix();
 };
 

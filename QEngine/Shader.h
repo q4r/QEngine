@@ -6,10 +6,6 @@
 #include <D3DX11.h>
 #include <D3DX10math.h>
 
-#include "Camera.h"
-#include "Texture.h"
-#include "Surface.h"
-
 class Shader{
 	friend class Scene;
 public:
@@ -56,14 +52,11 @@ private:
 	Shader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	~Shader(void);
 
-	
-
-	bool SetShaderParameters(const D3DXMATRIX& _view, const D3DXMATRIX& _projection);
-
 	bool Init(const std::string& fileName,
 		unsigned int additionalAttributes,
 		const std::string& vertexFunctionName = "VMain", const std::string& pixelFunctionName = "PMain");	
 public:
-	void Draw(Surface* surface, Camera* camera);
+	bool SetShaderParameters(const D3DXMATRIX& world, const D3DXMATRIX& view, const D3DXMATRIX& projection);
+	void SetAsCurrent();
 };
 

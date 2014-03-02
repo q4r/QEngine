@@ -36,8 +36,9 @@ Window::Window() :
 
 Window::~Window(void){
 	for (Scenes::iterator i = scenes.begin(); i != scenes.end(); i++){
-		delete *i;
+		SAFEDELETE(*i);
 	}
+	scenes.clear();
 	SAFEDELETE(d3d);
 	LOG("Window: destructor");
 }

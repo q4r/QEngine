@@ -4,9 +4,9 @@
 #include <D3DX11tex.h>
 #include <string>
 
-
 class Texture{
 	friend class Scene;
+	friend class Mesh;
 private:
 	ID3D11Device* pDevice;
 	ID3D11DeviceContext* pContext;

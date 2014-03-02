@@ -1,10 +1,10 @@
 #pragma once
 
-#include "D3D.h"
 #include "Scene.h"
 #include <list>
 
 #include "MD5Loader.h"
+
 
 class Window
 {
