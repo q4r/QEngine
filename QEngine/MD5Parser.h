@@ -26,6 +26,11 @@ private:
 
 	bool MeshMesh(std::ifstream& file);
 
+	bool BoundsAnim(std::ifstream& file);
+	bool BaseframeAnim(std::ifstream& file);
+	bool FrameAnim(std::ifstream& file);
+	
+
 	unsigned int numJoints;
 	unsigned int numMeshes;
 	unsigned int numFrames;
@@ -40,10 +45,13 @@ private:
 			float x, y, z;
 		} pos, ori;
 
+		struct{
+			float x, y, z;
+		} basePos, baseOri;
+
 		unsigned int flags;
 		unsigned int startIndex;
 	};
-
 	Joint* joints;
 
 	struct Mesh{
@@ -71,8 +79,16 @@ private:
 		};
 		std::vector<Weight> weights;
 	};
-
 	Mesh* meshes;
+	
+	struct Bounds{
+		struct{
+			float x, y, z;
+		} p1, p2;
+	};
+	Bounds* bounds;
+
+	std::vector<float*> frames;
 public:
 	MD5Parser();
 	~MD5Parser();

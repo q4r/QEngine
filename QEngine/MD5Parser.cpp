@@ -21,7 +21,12 @@ MD5Parser::MD5Parser() :
 
 MD5Parser::~MD5Parser(){
 	SAFEDELETEARRAY(joints);
-	SAFEDELETEARRAY(meshes);	
+	SAFEDELETEARRAY(meshes);
+	SAFEDELETEARRAY(bounds);
+	for (unsigned int i = 0; i < numFrames; i++){
+		SAFEDELETEARRAY(frames[i]);
+	}
+	frames.clear();
 }
 
 bool MD5Parser::Init(const std::string& path, const std::string meshName){
@@ -66,7 +71,7 @@ bool MD5Parser::ParseMeshFile(std::ifstream& file){
 		CALLIF(name, "joints", JointsMesh);
 
 		CALLIF(name, "mesh", MeshMesh);
-		return true;
+		return false;
 	}
 
 	return true;
@@ -84,7 +89,11 @@ bool MD5Parser::ParseAnimFile(std::ifstream& file){
 		CALLIF(name, "numAnimatedComponents", NumAnimatedComponentsAnim);
 		
 		CALLIF(name, "hierarchy", HierarchyAnim);
-		return true;
+		CALLIF(name, "bounds", BoundsAnim);
+		CALLIF(name, "baseframe", BaseframeAnim);
+		CALLIF(name, "frame", FrameAnim);
+			
+		return false;
 	}
 
 	return true;
@@ -121,6 +130,7 @@ bool MD5Parser::NumJointsAnim(std::ifstream& file){
 	file >> i;
 	CHECK(numJoints, i);
 	SKIPLINE;
+
 	return true;
 }
 
@@ -136,6 +146,9 @@ bool MD5Parser::NumMeshesMesh(std::ifstream& file){
 bool MD5Parser::NumFramesAnim(std::ifstream& file){
 	file >> numFrames;
 	SKIPLINE;
+
+	bounds = new Bounds[numFrames];
+	frames.reserve(numFrames);
 	return true;
 }
 
@@ -148,6 +161,12 @@ bool MD5Parser::FrameRateAnim(std::ifstream& file){
 bool MD5Parser::NumAnimatedComponentsAnim(std::ifstream& file){
 	file >> numAnimatedComponents;
 	SKIPLINE;
+
+	for (unsigned int i = 0; i < numFrames; i++){
+		float* components = new float[numAnimatedComponents];
+		frames.push_back(components);
+	}
+	
 	return true;
 }
 
@@ -325,5 +344,87 @@ bool MD5Parser::MeshMesh(std::ifstream& file){
 	meshNumder++;
 
 	LOG("mesh #" << meshNumder);
+	return true;
+}
+
+//-------------------------------------------------------------------------------
+
+
+bool MD5Parser::BoundsAnim(std::ifstream& file){
+	char ch;
+	file >> ch;
+	CHECK(ch, '{');
+	SKIPLINE;
+
+	for (unsigned int i = 0; i < numFrames; i++){
+		file >> ch;
+		CHECK(ch, '(');
+
+		file >> bounds[i].p1.x >> bounds[i].p1.y >> bounds[i].p1.z;
+
+		file >> ch;
+		CHECK(ch, ')');
+
+		file >> ch;
+		CHECK(ch, '(');
+
+		file >> bounds[i].p2.x >> bounds[i].p2.y >> bounds[i].p2.z;
+
+		file >> ch;
+		CHECK(ch, ')');
+	}
+
+	file >> ch;
+	CHECK(ch, '}');
+	SKIPLINE;
+	return true;
+}
+
+bool MD5Parser::BaseframeAnim(std::ifstream& file){
+	char ch;
+	file >> ch;
+	CHECK(ch, '{');
+	SKIPLINE;
+
+	for (unsigned int i = 0; i < numJoints; i++){
+		file >> ch;
+		CHECK(ch, '(');
+
+		file >> joints[i].basePos.x >> joints[i].basePos.y >> joints[i].basePos.z;
+
+		file >> ch;
+		CHECK(ch, ')');
+
+		file >> ch;
+		CHECK(ch, '(');
+
+		file >> joints[i].baseOri.x >> joints[i].baseOri.y >> joints[i].baseOri.z;
+
+		file >> ch;
+		CHECK(ch, ')');
+	}
+
+	file >> ch;
+	CHECK(ch, '}');
+	SKIPLINE;
+	return true;
+}
+
+bool MD5Parser::FrameAnim(std::ifstream& file){
+	unsigned int frame;
+	file >> frame;
+
+	char ch;
+	file >> ch;
+	CHECK(ch, '{');
+	SKIPLINE;
+
+	for (unsigned int i = 0; i < numAnimatedComponents; i++){
+		file >> frames[frame][i];
+	}
+
+	file >> ch;
+	CHECK(ch, '}');
+	SKIPLINE;
 	return true;
 }
