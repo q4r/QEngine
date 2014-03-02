@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include <MD5Loader.h>
+#include <Globals.h>
 
 Window* window;
 
@@ -8,6 +10,8 @@ Mesh* mesh;
 Scene* scene;
 Shader* shader;
 Texture* texture;
+
+Node* node;
 
 Camera* camera;
 float angle = 0.0;
@@ -46,7 +50,7 @@ void CreateSimpleMesh(Mesh* mesh, Shader* shader, Texture* texture){
 bool Init(){
 	scene = window->GetNewScene();
 
-	texture = scene->CreateTextureFromFile("../RES/BrickRound.jpg");
+	texture = scene->CreateTextureFromFile("../RES/MD5/guard1_body.jpg");
 	
 	//shader = scene->CreateShaderFromFile("../RES/Shader.fx", Shader::TEXCOORD0 | Shader::NORMAL);
 	shader = scene->CreateShaderFromFile("../RES/Shader1.fx", Shader::TEXCOORD0);
@@ -54,8 +58,8 @@ bool Init(){
 		return false;
 	}
 
-	mesh = scene->CreateMesh();
-	CreateSimpleMesh(mesh, shader, texture);
+	//mesh = scene->CreateMesh();
+	//CreateSimpleMesh(mesh, shader, texture);
 	//mesh->LoadFromMD5("../RES/MD5/boblampcleanJPG.md5mesh", "../RES/MD5/");
 
 	camera = scene->GetCamera();
@@ -63,16 +67,25 @@ bool Init(){
 		return false;
 	}
 
-	camera->SetPosition(0.0f, 0.0f, -3.0f);
+	//camera->SetPosition(0.0f, 0.0f, -33.0f);
 
-	//camera->SetPosition(0, 30, 80);
-	//camera->LookAt(0, 30, 0);
+	camera->SetPosition(0, 30, -80);
+	camera->LookAt(0, 30, 0);
 	camera->SetAspect(8.0f/6.0f);
 	//camera->LeftRight(0.5);
 
-	Node* node = scene->GetRoot();
+	MD5Loader loader;
+	mesh = loader.Init(*scene, "../RES/MD5", "boblampclean", shader);
+	if ( ! mesh ){
+		return false;
+	}
+
+	node = scene->GetRoot()->CreateChild();
 	node->SetMesh(mesh);
 	node->SetPosition(0.1f, 0.0f, 0.0f);
+
+	scene->GetRoot()->SetOrientation(D3DXVECTOR3(1, 0, 0), -90);
+
 	return true;
 }
 
@@ -82,8 +95,7 @@ bool Logic(){
 	angle += 0.01f;
 	//camera->LookAt(0, 30, 0);
 
-	Node* node = scene->GetRoot();
-	node->SetOrientation(D3DXVECTOR3(0, 0, -1), angle);
+	node->SetOrientation(D3DXVECTOR3(0, 1, 0), angle);
 
 	return true;
 }

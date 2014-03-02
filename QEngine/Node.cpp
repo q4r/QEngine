@@ -6,7 +6,8 @@ Node::Node() :
 	parent(NULL),
 	position(0, 0, 0),
 	orientation(),
-	children()
+	children(),
+	mesh(NULL)
 	{
 }
 
@@ -107,7 +108,9 @@ void Node::SetMesh(Mesh* _mesh){
 }
 
 void Node::Draw(Camera& camera){
-	mesh->Draw(GetGlobalMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
+	if (mesh){
+		mesh->Draw(GetGlobalMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix());
+	}
 
 	for (Children::iterator i = children.begin(); i != children.end(); i++){
 		(*i)->Draw(camera);

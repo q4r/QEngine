@@ -18,7 +18,7 @@ class Node{
 	Children children;
 
 	Mesh* mesh;
-public: //TEMP
+
 	Node();
 	~Node();
 
