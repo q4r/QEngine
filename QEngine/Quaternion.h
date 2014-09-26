@@ -11,11 +11,13 @@ class Quaternion{
 public:
 	Quaternion();	
 	Quaternion(const Quaternion& q);
+	Quaternion(float x, float y, float z); 
 	Quaternion(float x, float y, float z, float w); 
 	Quaternion(const D3DXVECTOR3& vector, float angle);
 	~Quaternion();
 
 	void Set(float x, float y, float z, float w);
+	void Set(const D3DXVECTOR3& vector, float angle);
 	void SetAsIdentity(float x, float y, float z);
 
 	void Add(const Quaternion& q);

@@ -8,11 +8,12 @@
 
 class Node{
 	friend class Scene;
+	friend class Skeleton;
 
 	Node* parent;
 	D3DXVECTOR3 position;
 	Quaternion orientation;
-	//D3DXVECTOR3 scale;
+	D3DXVECTOR3 scale;
 	
 	typedef std::list<Node*> Children;
 	Children children;
@@ -34,8 +35,12 @@ public:
 	void SetOrientation(D3DXVECTOR3 vector, float angle);
 	void SetOrientation(float x, float y, float z, float w);
 
+	void SetScale(float x, float y, float z);
+	void SetScale(float s);
+
 	D3DXVECTOR3 GetLocalPosition();
 	Quaternion GetLocalOrientation();
+	D3DXVECTOR3 GetLocalScale();
 
 	D3DXVECTOR3 GetGlobalPosition();
 	Quaternion GetGlobalOrientation();

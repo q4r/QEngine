@@ -6,12 +6,15 @@
 Window* window;
 
 Mesh* mesh;
+Mesh* simpleMesh;
 
 Scene* scene;
 Shader* shader;
 Texture* texture;
 
-Node* node;
+Node* node = NULL;
+Node* node2 = NULL;
+Node* node3 = NULL;
 
 Camera* camera;
 float angle = 0.0;
@@ -58,8 +61,8 @@ bool Init(){
 		return false;
 	}
 
-	//mesh = scene->CreateMesh();
-	//CreateSimpleMesh(mesh, shader, texture);
+	simpleMesh = scene->CreateMesh();
+	CreateSimpleMesh(simpleMesh, shader, texture);
 	//mesh->LoadFromMD5("../RES/MD5/boblampcleanJPG.md5mesh", "../RES/MD5/");
 
 	camera = scene->GetCamera();
@@ -69,8 +72,8 @@ bool Init(){
 
 	//camera->SetPosition(0.0f, 0.0f, -33.0f);
 
-	camera->SetPosition(0, 30, -80);
-	camera->LookAt(0, 30, 0);
+	camera->SetPosition(0, 0, -15);
+	camera->LookAt(0, 0, 0);
 	camera->SetAspect(8.0f/6.0f);
 	//camera->LeftRight(0.5);
 
@@ -81,10 +84,24 @@ bool Init(){
 	}
 
 	node = scene->GetRoot()->CreateChild();
-	node->SetMesh(mesh);
-	node->SetPosition(0.1f, 0.0f, 0.0f);
+	//node->SetMesh(mesh);
+	//===================
+	node->SetMesh(simpleMesh);
+	node->SetScale(0.3);
+	//===================
+	node->SetPosition(0.0f, 0, 0);
 
-	scene->GetRoot()->SetOrientation(D3DXVECTOR3(1, 0, 0), -90);
+	//scene->GetRoot()->SetOrientation(D3DXVECTOR3(1, 0, 0), -90);
+
+	node2 = node->CreateChild();
+	node2->SetMesh(simpleMesh);
+	node2->SetScale(.3);
+	node2->SetPosition(3.0f, 0, 0);
+
+	node3 = node2->CreateChild();
+	node3->SetMesh(simpleMesh);
+	node3->SetScale(.3);
+	node3->SetPosition(.0f, 3.0f, 0);
 
 	return true;
 }
@@ -93,9 +110,11 @@ bool Logic(){
 	//camera->SetPosition(cos(angle) * 80, 30, sin(angle) * 80);
 
 	angle += 0.01f;
+	//angle = 30.0f;
 	//camera->LookAt(0, 30, 0);
 
-	node->SetOrientation(D3DXVECTOR3(0, 1, 0), angle);
+	node->SetOrientation(D3DXVECTOR3(0, 0, 1), angle);
+	node2->SetOrientation(D3DXVECTOR3(0, 0, 1), -2 * angle);
 
 	return true;
 }

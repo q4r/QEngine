@@ -5,6 +5,7 @@
 Node::Node() : 
 	parent(NULL),
 	position(0, 0, 0),
+	scale(1, 1, 1),
 	orientation(),
 	children(),
 	mesh(NULL)
@@ -49,10 +50,25 @@ void Node::SetOrientation(float x, float y, float z, float w){
 }
 
 void Node::SetOrientation(D3DXVECTOR3 vector, float angle){
-	float halfAngle = (angle * GTOR) / 2.0f ;
-	float sinAngle = sin(halfAngle);
-	orientation.Set(vector.x * sinAngle, vector.y * sinAngle, vector.z * sinAngle, cos(halfAngle));
+	//float halfAngle = (angle * GTOR) / 2.0f ;
+	//float sinAngle = sin(halfAngle);
+	//orientation.Set(vector.x * sinAngle, vector.y * sinAngle, vector.z * sinAngle, cos(halfAngle));
+	
+	orientation.Set(vector, GTOR * angle);
 }
+
+void Node::SetScale(float _x, float _y, float _z){
+	scale.x = _x;
+	scale.y = _y;
+	scale.z = _z;
+}
+
+void Node::SetScale(float _s){
+	scale.x = _s;
+	scale.y = _s;
+	scale.z = _s;
+}
+
 
 D3DXVECTOR3 Node::GetLocalPosition(){
 	return position;
@@ -62,9 +78,14 @@ Quaternion Node::GetLocalOrientation(){
 	return orientation;
 }
 
+D3DXVECTOR3 Node::GetLocalScale(){
+	return scale;
+}
+
 D3DXVECTOR3 Node::GetGlobalPosition(){
 	if (parent){
-		return parent->GetGlobalPosition() + GetGlobalOrientation().Rotate(position);
+		return parent->GetGlobalPosition() + parent->GetGlobalOrientation().Rotate(position);
+		//return parent->GetGlobalPosition() + GetGlobalOrientation().Rotate(position);
 	}else{
 		return position;
 	}
@@ -88,11 +109,32 @@ D3DXMATRIX Node::GetLocalMatrix(){
 }
 
 D3DXMATRIX Node::GetGlobalMatrix(){
+	D3DXMATRIX scaleMatrix;
+	D3DXMatrixIdentity(&scaleMatrix);
+	//scaleMatrix.m[0][0] = scale.x;
+	//scaleMatrix.m[1][1] = scale.y;
+	//scaleMatrix.m[2][2] = scale.z;
+
 	D3DXMATRIX matrix = GetGlobalOrientation().GetMatrix();
+	//D3DXMatrixIdentity(&matrix);
+
+	D3DXMatrixMultiply(&matrix, &scaleMatrix, &matrix);
+
+	D3DXMATRIX translationMatrix;
+	D3DXMatrixIdentity(&translationMatrix);
+
 	D3DXVECTOR3 pos = GetGlobalPosition();
+	//translationMatrix.m[3][0] = pos.x;
+	//translationMatrix.m[3][1] = pos.y;
+	//translationMatrix.m[3][2] = pos.z;
+
 	matrix.m[3][0] = pos.x;
 	matrix.m[3][1] = pos.y;
 	matrix.m[3][2] = pos.z;
+
+
+//	D3DXMatrixMultiply(&matrix, &translationMatrix, &matrix);
+
 
 	return matrix;
 }

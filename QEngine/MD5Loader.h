@@ -6,6 +6,7 @@
 #include "Node.h"
 #include "Mesh.h"
 #include "Scene.h"
+#include "Skeleton.h"
 
 class MD5Loader{
 private:

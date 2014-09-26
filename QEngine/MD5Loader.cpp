@@ -78,5 +78,25 @@ Mesh* MD5Loader::Init(Scene& scene, const std::string& path, const std::string m
 		pMesh->AddSurface(vertices, texCoords, indises, shader, texture);
 	}
 
+	Skeleton* pSkeleton = new Skeleton();
+	Node* pRoot = pSkeleton->GetRoot();
+
+	Node** Joints = new Node*[parser.numJoints];
+	Joints[0] = pRoot;
+
+	MD5Parser::Joint& rootJoint = parser.joints[0];
+	pRoot->SetPosition(rootJoint.basePos.x, rootJoint.basePos.y, rootJoint.basePos.z);
+	pRoot->SetOrientation(Quaternion(rootJoint.baseOri.x, rootJoint.baseOri.y, rootJoint.baseOri.z));
+
+	for (unsigned int i = 1; i < parser.numJoints; i++){
+		MD5Parser::Joint& joint = parser.joints[i];
+		Joints[i] = Joints[joint.parent]->CreateChild();
+
+		Joints[i]->SetPosition(joint.basePos.x, joint.basePos.y, joint.basePos.z);
+		Joints[i]->SetOrientation(Quaternion(joint.baseOri.x, joint.baseOri.y, joint.baseOri.z));		
+	}
+
+	SAFEDELETEARRAY(Joints);
+
 	return pMesh;
 }

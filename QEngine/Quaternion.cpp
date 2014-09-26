@@ -19,6 +19,15 @@ Quaternion::Quaternion(const Quaternion& q) :
 {
 }
 
+Quaternion::Quaternion(float _x, float _y, float _z) : 
+	x(0),
+	y(0),
+	z(0), 
+	w(0)
+{
+	SetAsIdentity(_x, _y, _z);
+}
+
 Quaternion::Quaternion(float _x, float _y, float _z, float _w) : 
 	x(_x),
 	y(_y),
@@ -46,6 +55,15 @@ void Quaternion::Set(float _x, float _y, float _z, float _w){
 	z = _z;
 	w = _w;
 }
+
+void Quaternion::Set(const D3DXVECTOR3& vector, float angle){
+	x = vector.x;
+	y = vector.y;
+	z = vector.z;
+	Mul(sin(angle / 2));
+	w = cos(angle / 2);
+}
+
 
 void Quaternion::SetAsIdentity(float _x, float _y, float _z){
 	x = _x;
@@ -85,29 +103,29 @@ void Quaternion::Div(float f){
 }
 
 Quaternion Quaternion::Product(const Quaternion& q){
-	//Quaternion result;
-	//D3DXVECTOR3 v1(x, y, z);
-	//D3DXVECTOR3 v2(q.x, q.y, q.z);
+	Quaternion result;
+	D3DXVECTOR3 v1(x, y, z);
+	D3DXVECTOR3 v2(q.x, q.y, q.z);
 
-	//D3DXVECTOR3 v3;
+	D3DXVECTOR3 v3;
 
-	//D3DXVec3Cross(&v3, &v1, &v2);
-	//v3 = v3 + v1 * q.w + v2 * w;
+	D3DXVec3Cross(&v3, &v1, &v2);
+	v3 = v3 + v1 * q.w + v2 * w;
 
-	//result.x = v3.x;
-	//result.y = v3.y;
-	//result.z = v3.z;
+	result.x = v3.x;
+	result.y = v3.y;
+	result.z = v3.z;
 
-	//result.w = w * q.w - D3DXVec3Dot(&v1, &v2);
+	result.w = w * q.w - D3DXVec3Dot(&v1, &v2);
 
-	//return result;
+	return result;
 
-	float _w = (w * q.w) - (x * q.x) - (y * q.y) - (z * q.z);
-	float _x = (x * q.w) + (w * q.x) + (y * q.z) - (z * q.y);
-	float _y = (y * q.w) + (w * q.y) + (z * q.x) - (x * q.z);
-	float _z = (z * q.w) + (w * q.z) + (x * q.y) - (y * q.x);
+	//float _w = (w * q.w) - (x * q.x) - (y * q.y) - (z * q.z);
+	//float _x = (x * q.w) + (w * q.x) + (y * q.z) - (z * q.y);
+	//float _y = (y * q.w) + (w * q.y) + (z * q.x) - (x * q.z);
+	//float _z = (z * q.w) + (w * q.z) + (x * q.y) - (y * q.x);
 
-	return Quaternion(_x, _y, _z, _w);
+	//return Quaternion(_x, _y, _z, _w);
 
 	//Quaternion another(q);
 	//Quaternion temp;
@@ -143,9 +161,7 @@ void Quaternion::Identity(){
 
 D3DXVECTOR3 Quaternion::Rotate(const D3DXVECTOR3& vector){
 	Quaternion v(vector.x, vector.y, vector.z, 0.0f);
-
-	Quaternion q = Product(v);
-	q = q.Product(GetInverse());
+	Quaternion q = GetInverse().Product(v).Product(*this);
 
 	return D3DXVECTOR3(q.x, q.y, q.z);
 }
