@@ -15,6 +15,7 @@ Texture* texture;
 Node* node = NULL;
 Node* node2 = NULL;
 Node* node3 = NULL;
+Node* node4 = NULL;
 
 Camera* camera;
 float angle = 0.0;
@@ -25,10 +26,10 @@ void CreateSimpleMesh(Mesh* mesh, Shader* shader, Texture* texture){
 	Surface::Normals normals;
 	Surface::Indices indices;
 
-	vertices.push_back(D3DXVECTOR3(-1.0f, -1.0f, 0.0f));
-	vertices.push_back(D3DXVECTOR3(-1.0f,  1.0f, 0.0f));
-	vertices.push_back(D3DXVECTOR3( 1.0f, -1.0f, 0.0f));
-	vertices.push_back(D3DXVECTOR3( 1.0f,  1.0f, 0.0f));
+	vertices.push_back(D3DXVECTOR3(-1.0f, -0.2f, 0.0f));
+	vertices.push_back(D3DXVECTOR3(-1.0f,  0.2f, 0.0f));
+	vertices.push_back(D3DXVECTOR3( 1.0f, -0.0f, 0.0f));
+	vertices.push_back(D3DXVECTOR3( 1.0f,  0.0f, 0.0f));
 
 	normals.push_back(D3DXVECTOR3(0.0f, 0.0f, -1.0f));
 	normals.push_back(D3DXVECTOR3(0.0f, 0.0f, -1.0f));
@@ -87,7 +88,7 @@ bool Init(){
 	//node->SetMesh(mesh);
 	//===================
 	node->SetMesh(simpleMesh);
-	node->SetScale(0.3);
+	node->SetScale(0.8);
 	//===================
 	node->SetPosition(0.0f, 0, 0);
 
@@ -95,13 +96,21 @@ bool Init(){
 
 	node2 = node->CreateChild();
 	node2->SetMesh(simpleMesh);
-	node2->SetScale(.3);
-	node2->SetPosition(3.0f, 0, 0);
+	//node2->SetScale(.6);
+	node2->SetOrientation(D3DXVECTOR3(0, 0, 1), 90);
+	node2->SetPosition(5.0f, 0, 0);
 
 	node3 = node2->CreateChild();
 	node3->SetMesh(simpleMesh);
-	node3->SetScale(.3);
-	node3->SetPosition(.0f, 3.0f, 0);
+	//node3->SetScale(.4);
+	node3->SetOrientation(D3DXVECTOR3(0, 0, 1), -90);
+	node3->SetPosition(5.0f, 0.0f, 0);
+
+	node4 = node->CreateChild();
+	node4->SetMesh(simpleMesh);
+	//node3->SetScale(.4);
+	node4->SetPosition(0.0f, 3.0f, 0);
+	node4->SetOrientation(D3DXVECTOR3(0, 0, 1), 180);
 
 	return true;
 }
@@ -114,7 +123,7 @@ bool Logic(){
 	//camera->LookAt(0, 30, 0);
 
 	node->SetOrientation(D3DXVECTOR3(0, 0, 1), angle);
-	node2->SetOrientation(D3DXVECTOR3(0, 0, 1), -2 * angle);
+	node2->SetOrientation(D3DXVECTOR3(0, 0, 1), -2 * angle + 90);
 
 	return true;
 }

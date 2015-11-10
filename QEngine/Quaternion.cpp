@@ -161,8 +161,11 @@ void Quaternion::Identity(){
 
 D3DXVECTOR3 Quaternion::Rotate(const D3DXVECTOR3& vector){
 	Quaternion v(vector.x, vector.y, vector.z, 0.0f);
-	Quaternion q = GetInverse().Product(v).Product(*this);
+	
+	//Quaternion q = GetInverse().Product(v).Product(*this);
 
+	Quaternion q = Product(v).Product(GetInverse());
+	
 	return D3DXVECTOR3(q.x, q.y, q.z);
 }
 
@@ -170,17 +173,15 @@ D3DXMATRIX Quaternion::GetMatrix(){
 	D3DXMATRIX matrix;
 	D3DXMatrixIdentity(&matrix);
 	matrix.m[0][0] = 1 - 2 * y * y - 2 * z * z;
-	matrix.m[0][1] = 2 * x * y - 2 * z * w;
-	matrix.m[0][2] = 2 * x * z + 2 * y * w;
+	matrix.m[1][0] = 2 * x * y - 2 * z * w;
+	matrix.m[2][0] = 2 * x * z + 2 * y * w;
 
-
-	matrix.m[1][0] = 2 * x * y + 2 * z * w;
+	matrix.m[0][1] = 2 * x * y + 2 * z * w;
 	matrix.m[1][1] = 1 - 2 * x * x - 2 * z * z;
-	matrix.m[1][2] = 2 * y * z - 2 * x * w;
+	matrix.m[2][1] = 2 * y * z - 2 * x * w;
 
-
-	matrix.m[2][0] = 2 * x * z - 2 * y * w;
-	matrix.m[2][1] = 2 * y * z + 2 * x * w;
+	matrix.m[0][2] = 2 * x * z - 2 * y * w;
+	matrix.m[1][2] = 2 * y * z + 2 * x * w;
 	matrix.m[2][2] = 1 - 2 * x * x - 2 * y * y;
 
 	return matrix;

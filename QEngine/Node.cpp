@@ -82,10 +82,11 @@ D3DXVECTOR3 Node::GetLocalScale(){
 	return scale;
 }
 
+
+
 D3DXVECTOR3 Node::GetGlobalPosition(){
 	if (parent){
 		return parent->GetGlobalPosition() + parent->GetGlobalOrientation().Rotate(position);
-		//return parent->GetGlobalPosition() + GetGlobalOrientation().Rotate(position);
 	}else{
 		return position;
 	}
@@ -93,48 +94,55 @@ D3DXVECTOR3 Node::GetGlobalPosition(){
 
 Quaternion Node::GetGlobalOrientation(){
 	if (parent){
-		return parent->GetGlobalOrientation().Product(orientation);
+		return parent->GetGlobalOrientation().Product(orientation); //check
 	}else{
 		return orientation;
 	}
 }
 
 D3DXMATRIX Node::GetLocalMatrix(){
-	D3DXMATRIX matrix = orientation.GetMatrix();
-	matrix.m[3][0] = position.x;
-	matrix.m[3][1] = position.y;
-	matrix.m[3][2] = position.z;
+	D3DXMATRIX matrix;
+	D3DXMatrixIdentity(&matrix);
+
+	D3DXMATRIX rotationMatrix = orientation.GetMatrix();
+
+	D3DXMATRIX translationMatrix;
+	D3DXMatrixIdentity(&translationMatrix);
+
+	translationMatrix.m[3][0] = position.x;
+	translationMatrix.m[3][1] = position.y;
+	translationMatrix.m[3][2] = position.z;
+
+	D3DXMatrixMultiply(&matrix, &translationMatrix, &rotationMatrix);
 
 	return matrix;
 }
 
 D3DXMATRIX Node::GetGlobalMatrix(){
-	D3DXMATRIX scaleMatrix;
-	D3DXMatrixIdentity(&scaleMatrix);
+	D3DXMATRIX matrix;
+	D3DXMatrixIdentity(&matrix);
 	//scaleMatrix.m[0][0] = scale.x;
 	//scaleMatrix.m[1][1] = scale.y;
 	//scaleMatrix.m[2][2] = scale.z;
 
-	D3DXMATRIX matrix = GetGlobalOrientation().GetMatrix();
-	//D3DXMatrixIdentity(&matrix);
-
-	D3DXMatrixMultiply(&matrix, &scaleMatrix, &matrix);
+	D3DXMATRIX rotationMatrix = GetGlobalOrientation().GetMatrix();
+	//D3DXMatrixIdentity(&rotationMatrix);
+	//D3DXMatrixMultiply(&matrix, &rotationMatrix, &matrix);
 
 	D3DXMATRIX translationMatrix;
 	D3DXMatrixIdentity(&translationMatrix);
 
 	D3DXVECTOR3 pos = GetGlobalPosition();
-	//translationMatrix.m[3][0] = pos.x;
-	//translationMatrix.m[3][1] = pos.y;
-	//translationMatrix.m[3][2] = pos.z;
+	translationMatrix.m[3][0] = pos.x;
+	translationMatrix.m[3][1] = pos.y;
+	translationMatrix.m[3][2] = pos.z;
 
-	matrix.m[3][0] = pos.x;
-	matrix.m[3][1] = pos.y;
-	matrix.m[3][2] = pos.z;
+	//matrix.m[3][0] = pos.x;
+	//matrix.m[3][1] = pos.y;
+	//matrix.m[3][2] = pos.z;
 
-
-//	D3DXMatrixMultiply(&matrix, &translationMatrix, &matrix);
-
+	//D3DXMatrixMultiply(&matrix, &translationMatrix, &rotationMatrix);
+	D3DXMatrixMultiply(&matrix, &rotationMatrix, &translationMatrix);
 
 	return matrix;
 }
